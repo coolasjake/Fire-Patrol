@@ -280,7 +280,7 @@ PrefabInstance:
     - target: {fileID: 7261883065835900249, guid: ca88d61f34057e84bb09957649f369aa,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 7261883065835900249, guid: ca88d61f34057e84bb09957649f369aa,
         type: 3}
@@ -792,6 +792,7 @@ GameObject:
   - component: {fileID: 330585545}
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
+  - component: {fileID: 330585548}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -866,8 +867,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: -0.35115662, y: -0.0050535663, z: 0.0018954194, w: -0.93630123}
+  m_LocalPosition: {x: 10.284874, y: 18.810276, z: -26.971813}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -917,6 +918,21 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
+--- !u!114 &330585548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c9e7feb04273404799a55901a44d3a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  helicopter: {fileID: 1382299234}
+  accelleration: 1
+  maxVelocity: 5
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1756,7 +1772,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e5c05bdfb212fb4687977f0eec2399a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  propellorSpeed: 90
+  propellorSpeed: 1000
   accelleration: 5
   maxSpeed: 10
   propellor: {fileID: 1645870659}
@@ -1769,7 +1785,7 @@ Transform:
   m_GameObject: {fileID: 1382299232}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.83, y: 7, z: -12.88}
+  m_LocalPosition: {x: 11.7, y: 7, z: -12.88}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2218,20 +2234,20 @@ SceneRoots:
   - {fileID: 330585546}
   - {fileID: 410087041}
   - {fileID: 832575519}
-  - {fileID: 8339138936078585778}
-  - {fileID: 921702830}
-  - {fileID: 534583915}
-  - {fileID: 794162018}
-  - {fileID: 918182209}
-  - {fileID: 98933810}
-  - {fileID: 1608379575}
-  - {fileID: 10693294}
-  - {fileID: 262642022}
-  - {fileID: 862794231}
-  - {fileID: 236599146}
-  - {fileID: 864522629}
-  - {fileID: 121071668}
-  - {fileID: 258364819}
-  - {fileID: 442824863}
-  - {fileID: 1575824682}
   - {fileID: 1382299234}
+  - {fileID: 98933810}
+  - {fileID: 10693294}
+  - {fileID: 862794231}
+  - {fileID: 442824863}
+  - {fileID: 794162018}
+  - {fileID: 236599146}
+  - {fileID: 1575824682}
+  - {fileID: 121071668}
+  - {fileID: 1608379575}
+  - {fileID: 921702830}
+  - {fileID: 918182209}
+  - {fileID: 864522629}
+  - {fileID: 258364819}
+  - {fileID: 8339138936078585778}
+  - {fileID: 262642022}
+  - {fileID: 534583915}

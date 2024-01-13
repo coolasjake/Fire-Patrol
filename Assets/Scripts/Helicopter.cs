@@ -26,6 +26,7 @@ public class Helicopter : MonoBehaviour
         SpinPropellor();
         InputForces();
         DragForces();
+        transform.rotation = Quaternion.LookRotation(RB.velocity);
     }
 
     private void InputForces()
@@ -34,7 +35,7 @@ public class Helicopter : MonoBehaviour
         input.x = Input.GetAxis("Horizontal");
         input.y = Input.GetAxis("Vertical");
 
-        RB.velocity += input.ToVector3();
+        RB.velocity += input.ToVector3() * accelleration * Time.deltaTime;
     }
 
     private void SpinPropellor()
