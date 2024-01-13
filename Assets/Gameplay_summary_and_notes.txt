@@ -1,0 +1,27 @@
+gameplay:
+You play as a bushfire patrol helicopter, who must prevent fires from getting out of control.
+
+- Open game
+- Click play
+Main loop:
+- Scene is a procedurally generated set of tiles with forests, rivers, plains and other landscape features
+- Round starts with helicopter above the fire base
+- The date/time is ticking up in the top corner, at a rate of roughly 3 months (fire season) per 10 mins
+- The helicopter moves quickly but changes direction slowly
+- The bucket can be opened (release water) or lowered (pick up water/other things), and swings a lot, potentially changing where water lands
+- 1-3 'quests' will appear underneath the timer, saying possible fire locations (e.g. plains to the east, south near the river)
+- Player explores, trying to find any fires, and uses the water bucket to put them out/prevent them spreading
+- Water is limited, so player must return to base/water source to get more
+
+
+
+Choices:
+- length of fire season
+- if helicopter uses fuel (could replace season timer)
+- effectiveness of water (do you get charges / one big splash / small but long lasting splash etc)
+- map persistence (is the map random every round, or between gameovers, and do consequences persist to the next round)
+- is focus on:
+	- exploring, finding the fire, and prevention, or
+	- using water efficiently to slow/stop fire like a puzzle game
+- is stopping fire always the goal, or is letting things burn sometimes a good idea
+
