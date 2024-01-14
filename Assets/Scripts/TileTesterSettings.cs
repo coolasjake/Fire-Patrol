@@ -6,6 +6,7 @@ namespace FirePatrol
     [Serializable]
     public class TileInfo
     {
+        public int PrefabIndex;
         public GameObject Prefab;
         public float Rotation;
     }

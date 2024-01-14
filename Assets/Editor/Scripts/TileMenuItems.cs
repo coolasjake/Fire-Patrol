@@ -188,6 +188,12 @@ namespace FirePatrol
             return tiles;
         }
 
+        [MenuItem("Svkj/Save Clean Version")]
+        public static void SaveCleanVersion()
+        {
+            var obj = Selection.activeObject as GameObject;
+        }
+
         [MenuItem("Svkj/Toggle Tile Test %&i")]
         public static void ToggleTiles()
         {
