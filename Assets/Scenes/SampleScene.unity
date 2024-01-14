@@ -280,7 +280,7 @@ PrefabInstance:
     - target: {fileID: 7261883065835900249, guid: ca88d61f34057e84bb09957649f369aa,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7261883065835900249, guid: ca88d61f34057e84bb09957649f369aa,
         type: 3}
@@ -930,9 +930,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c9e7feb04273404799a55901a44d3a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  helicopter: {fileID: 1382299234}
-  accelleration: 1
-  maxVelocity: 5
+  followTarget: {fileID: 1382299234}
+  smoothness: 2
+  maxDist: 10
+  maxAccelleration: 1
+  moveInFixedUpdate: 1
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
