@@ -16,16 +16,12 @@ namespace FirePatrol
         {
             if (string.IsNullOrWhiteSpace(filePath))
             {
-                throw new ArgumentException(
-                    "File path cannot be null or empty.", nameof(filePath));
+                throw new ArgumentException("File path cannot be null or empty.", nameof(filePath));
             }
 
             _filePath = filePath;
 
-            _streamWriter = new StreamWriter(_filePath, append:true)
-            {
-                AutoFlush = true
-            };
+            _streamWriter = new StreamWriter(_filePath, append: true) { AutoFlush = true };
 
             _timer = Stopwatch.StartNew();
         }

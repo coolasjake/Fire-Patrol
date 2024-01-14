@@ -26,8 +26,9 @@ namespace FirePatrol
 #if UNITY_EDITOR
             if (System.Environment.GetEnvironmentVariable("COMPUTERNAME") == "STEVE-HOME")
             {
-                Log.AddStream(new SimpleFileLog(
-                    Path.Combine(Application.dataPath, "../Svkj.json")));
+                Log.AddStream(
+                    new SimpleFileLog(Path.Combine(Application.dataPath, "../Svkj.json"))
+                );
                 UnityLogRedirector.Start();
             }
             else

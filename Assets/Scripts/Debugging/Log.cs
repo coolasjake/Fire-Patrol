@@ -8,7 +8,10 @@ namespace FirePatrol
         private static readonly List<ILogStream> _streams = new List<ILogStream>();
         private static LogLevel _maxLogLevel = LogLevel.Debug;
 
-        public static IReadOnlyList<ILogStream> Streams { get { return _streams; } }
+        public static IReadOnlyList<ILogStream> Streams
+        {
+            get { return _streams; }
+        }
 
         public static LogLevel MaxLogLevel
         {
@@ -102,13 +105,7 @@ namespace FirePatrol
             RecordLog(LogLevel.Debug, message, arg1, arg2, arg3);
         }
 
-        public static void Debug(
-            string message,
-            object arg1,
-            object arg2,
-            object arg3,
-            object arg4
-        )
+        public static void Debug(string message, object arg1, object arg2, object arg3, object arg4)
         {
             RecordLog(LogLevel.Debug, message, arg1, arg2, arg3, arg4);
         }
@@ -285,12 +282,7 @@ namespace FirePatrol
             }
         }
 
-        public static void RecordLog(
-            LogLevel logLevel,
-            string message,
-            object arg1,
-            object arg2
-        )
+        public static void RecordLog(LogLevel logLevel, string message, object arg1, object arg2)
         {
             if (IsLevelEnabled(logLevel))
             {
@@ -360,6 +352,5 @@ namespace FirePatrol
 
             return (int)logLevel <= (int)MaxLogLevel;
         }
-
     }
 }
