@@ -11,6 +11,7 @@ namespace FirePatrol
         const float TILE_SIZE = 30.0f;
         const int POINTS_PER_ROW = 10;
         const int TILES_PER_ROW = POINTS_PER_ROW - 1;
+        const string CLEANED_PREFAB_SAVE_DIR = "Assets/Prefabs/Steve/Tiles/Cleaned";
 
         private static void LoadTile(Transform levelParent, TileTesterSettings settings, int row, int col, int type)
         {
@@ -191,7 +192,36 @@ namespace FirePatrol
         [MenuItem("Svkj/Save Clean Version")]
         public static void SaveCleanVersion()
         {
-            var obj = Selection.activeObject as GameObject;
+            var meshMerger = new MAST.Tools.CombineMeshes();
+            var sourceObj = Selection.activeGameObject;
+            var tileName = sourceObj.name;
+
+            Assert.That(tileName.StartsWith("Grass") || tileName.StartsWith("Sand"));
+
+            var mergedGameObj = meshMerger.MergeMeshes(sourceObj);
+
+            try
+            {
+                mergedGameObj.name = tileName + "_Merged";
+
+                var meshFilter = mergedGameObj.GetComponentInChildren<MeshFilter>();
+
+                var mesh = meshFilter.sharedMesh;
+                var meshAssetPath = CLEANED_PREFAB_SAVE_DIR + $"/{tileName}.asset";
+                AssetDatabase.CreateAsset(mesh, meshAssetPath);
+                AssetDatabase.SaveAssets();
+
+                meshFilter.sharedMesh = AssetDatabase.LoadAssetAtPath<Mesh>(meshAssetPath);
+
+                var prefabSavePath = CLEANED_PREFAB_SAVE_DIR + $"/{tileName}_Merged.prefab";
+                PrefabUtility.SaveAsPrefabAssetAndConnect(mergedGameObj, prefabSavePath, InteractionMode.UserAction);
+
+                Debug.Log($"Successfully saved clean version at {prefabSavePath}");
+            }
+            finally
+            {
+                GameObject.DestroyImmediate(mergedGameObj);
+            }
         }
 
         [MenuItem("Svkj/Toggle Tile Test %&i")]
