@@ -14,24 +14,24 @@ public class Helicopter : MonoBehaviour
     [Min(0.001f)]
     public float accelleration = 5f;
 
-    [Tooltip("How steep the helicoptor tilt it (doesn't effect movement).")]
+    [Tooltip("How steep the helicopter tilt it (doesn't effect movement).")]
     [Min(0.001f)]
     public float tiltAmount = 1f;
 
-    [Tooltip("How quickly the helicoptor changes the angle it's tilted in - effects responsiveness.")]
+    [Tooltip("How quickly the helicopter changes the angle it's tilted in - effects responsiveness.")]
     [Min(0.001f)]
     public float tiltSpeed = 1f;
 
     [Header("Turning Settings")]
-    [Tooltip("How quickly the helicoptor turns to face the input direction - effects responsiveness based on alignment bonus.")]
+    [Tooltip("How quickly the helicopter turns to face the input direction - effects responsiveness based on alignment bonus.")]
     [Min(10f)]
     public float turnSpeed = 1f;
 
-    [Tooltip("How accurate the helicoptor turning is - low values will make it over-turn and then compensate.")]
+    [Tooltip("How accurate the helicopter turning is - low values will make it over-turn and then compensate.")]
     [Min(0.001f)]
     public float turnHandling = 1f;
 
-    [Tooltip("How much more/less the helicoptor tilts when moving forwards/backwards.")]
+    [Tooltip("How much more/less the helicopter tilts when moving forwards/backwards.")]
     [Range(0f, 1f)]
     public float alignmentBonus = 1f;
 
