@@ -1,0 +1,224 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Cave Waterfall
+  m_Shader: {fileID: 4800000, guid: aca98b7d89a0c7f4caee09e13fc18fcc, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2999
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: 13d159541eb74c24eba945a8cbee9582, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Distortion:
+        m_Texture: {fileID: 2800000, guid: dca8177264946174cb45e6efa0e24fce, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Distortion1:
+        m_Texture: {fileID: 2800000, guid: dca8177264946174cb45e6efa0e24fce, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Distortion2:
+        m_Texture: {fileID: 2800000, guid: dca8177264946174cb45e6efa0e24fce, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DistortionTexture:
+        m_Texture: {fileID: 2800000, guid: dca8177264946174cb45e6efa0e24fce, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Foam:
+        m_Texture: {fileID: 2800000, guid: 67840551aa7a0ef40880425832eef102, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: a680d3503cf5b3747b0c99e61894eebb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex2:
+        m_Texture: {fileID: 2800000, guid: a680d3503cf5b3747b0c99e61894eebb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SurfaceDistortion:
+        m_Texture: {fileID: 2800000, guid: 55b2181e032c75d409c6f349c1cc5004, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SurfaceNoise:
+        m_Texture: {fileID: 2800000, guid: 970fd7ef57bd8c9498a610fe64500c95, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture0:
+        m_Texture: {fileID: 2800000, guid: dca8177264946174cb45e6efa0e24fce, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture1:
+        m_Texture: {fileID: 2800000, guid: 46a11d35b91f1664d82bc3b9ca998c7a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2:
+        m_Texture: {fileID: 2800000, guid: 46a11d35b91f1664d82bc3b9ca998c7a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WaterTexture:
+        m_Texture: {fileID: 2800000, guid: 8f64070784cbe3c4786549c4decf13dd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Blend: 0.18
+    - _BumpScale: 1
+    - _Cutoff: 0.5
+    - _Depth: 2
+    - _DepthMaxDistance: 0.5
+    - _DetailNormalMapScale: 1
+    - _DistortionAmount: 2.7
+    - _DistortionAmount1: 8.1
+    - _DistortionPlanarScale: 3
+    - _DistortionPlanarScale1: 1
+    - _DistortionPlanarScale2: 0.72
+    - _DistortionScrollX: 1.2
+    - _DistortionScrollY: 10.5
+    - _DistortionStrength: 7.8
+    - _DistortionYSpeed: 1.07
+    - _DstBlend: 0
+    - _EdgeDistance: 0
+    - _Fix: -1
+    - _Float0: 1.62
+    - _Float1: 0.2
+    - _FoamBotMaxDistance: 0.12
+    - _FoamBotMinDistance: 0.08
+    - _FoamBottom: 0
+    - _FoamDistanceBottom: 0
+    - _FoamDistanceTop: 0
+    - _FoamEdgeSoftness: 0.687
+    - _FoamLocation: 1
+    - _FoamMaxDistance: 0.2
+    - _FoamMinDistance: 0
+    - _FoamPlanarScale: 1
+    - _FoamPlanarScale1: 1
+    - _FoamSoftness: 0
+    - _FoamTop: 0
+    - _FoamTopMaxDistance: 0.12
+    - _FoamTopMinDistance: 0.08
+    - _GlossMapScale: 1
+    - _Glossiness: 0.47
+    - _GlossyReflections: 1
+    - _InvFade: 6
+    - _Metallic: 1
+    - _Mode: 0
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _PlanarDistortionScale: 1
+    - _ScrollXSpeed: -0.42
+    - _ScrollXSpeed1: -1
+    - _ScrollXSpeed2: 0.72
+    - _ScrollXSpeedNM: 1.7
+    - _ScrollYSpeed: 13.6
+    - _ScrollYSpeed1: 12.6
+    - _ScrollYSpeed2: 12.6
+    - _ScrollYSpeedNM: 4.7
+    - _Shininess: 0.419
+    - _Smooth: 0.5
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _SurfaceDistortionAmount: 0.453
+    - _SurfaceNoiseCoverage: 0.48
+    - _SurfaceNoiseCutoff: 1
+    - _SurfaceNoiseScrollX: -0.17
+    - _SurfaceNoiseScrollX1: 0.08
+    - _SurfaceNoiseScrollX2: -0.08
+    - _SurfaceNoiseScrollY: 0.31
+    - _SurfaceNoiseScrollY1: 0
+    - _SurfaceNoiseScrollY2: 0
+    - _TextureDistortionAmount: 2.08
+    - _TexturePlanarScale: 0.05
+    - _TextureScrollX: 1.7
+    - _TextureScrollY: 24.7
+    - _TransAmbient: 1
+    - _TransDirect: 1
+    - _TransNormalDistortion: 0
+    - _TransScattering: 6.2
+    - _TransShadow: 0
+    - _Translucency: 0.7
+    - _Translucent: 3.57
+    - _TranslucentPower: 1.25
+    - _Transparency1: 1
+    - _Transparency2: 1
+    - _UVSec: 0
+    - _WaterGradientDepth: 1.03
+    - _WaterTextureStrength: 0.23
+    - _WorldtoObjectSwitch1: 0
+    - _ZWrite: 1
+    - __dirty: 0
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 0.9137255}
+    - _Color1: {r: 1, g: 1, b: 1, a: 0.5568628}
+    - _Color2: {r: 1, g: 1, b: 1, a: 1}
+    - _DeepColor: {r: 0, g: 0.12062501, b: 0.18039216, a: 0}
+    - _DepthColor: {r: 0, g: 0, b: 0, a: 0.5}
+    - _DepthGradientDeep: {r: 0, g: 0.5470086, b: 0.6037736, a: 1}
+    - _DepthGradientShallow: {r: 0, g: 0.682796, b: 1, a: 0.44705883}
+    - _DistortionMovement: {r: 0.1, g: -0.22, b: 0, a: 0}
+    - _DistortionPlanarScale: {r: 0.01, g: 1, b: 0, a: 0}
+    - _DistortionScale: {r: 0.57, g: 0.04, b: 1.23, a: 0.64}
+    - _DistortionSpeed: {r: 0, g: 0.31, b: 0, a: 0}
+    - _DistortionSpeed1: {r: 0.31, g: 0.2, b: 0, a: 0}
+    - _DistortionSpeed2: {r: 0.1, g: 0.03, b: 0, a: 0}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FoamColor: {r: 0.8396226, g: 0.8396226, b: 0.8396226, a: 1}
+    - _FoamFlowSpeed: {r: 0.09, g: 0.82, b: 0, a: 0}
+    - _MainTint: {r: 1, g: 1, b: 1, a: 1}
+    - _PlanarDistortionMovement: {r: 0.26, g: 0.09, b: 0, a: 0}
+    - _PlanarFoamMovement: {r: 0.1, g: 2.06, b: 0, a: 0}
+    - _PlanarFoamMovement1: {r: 0.1, g: 0.1, b: 0, a: 0}
+    - _ShallowColor: {r: 0, g: 0.02209929, b: 0.039215688, a: 0}
+    - _SurfaceNoiseScroll: {r: 0.06, g: 0.5, b: 0, a: 0}
+    - _TexturePlanarScale: {r: 0.02, g: 0.2, b: 0, a: 0}
+    - _TranslucencyColor: {r: 0, g: 0.78039217, b: 0.8666667, a: 0}
+    - _Vector0: {r: 0.2, g: 1, b: 1, a: 0}
+    - _WaterFlowSpeed: {r: 0.15, g: 1.41, b: 0, a: 0}
+    - _WaterTexturePlanarScale: {r: 0.01, g: 0.05, b: 0, a: 0}

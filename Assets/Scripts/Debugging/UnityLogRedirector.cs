@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 
 namespace FirePatrol
 {
@@ -40,11 +40,7 @@ namespace FirePatrol
             Application.logMessageReceived -= OnUnityLog;
         }
 
-        private static void OnUnityLog(
-            string message,
-            string stackTrace,
-            LogType logType
-        )
+        private static void OnUnityLog(string message, string stackTrace, LogType logType)
         {
             var customLogType = ConvertUnityLogType(logType);
             var fullMessage = string.Format("[Unity] {0}", message);

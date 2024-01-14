@@ -132,7 +132,8 @@ namespace FirePatrol
             }
         }
 
-        public static void IsNull<T>(T value) where T : class
+        public static void IsNull<T>(T value)
+            where T : class
         {
             if (value != null)
             {
@@ -140,7 +141,8 @@ namespace FirePatrol
             }
         }
 
-        public static void IsNull<T>(T value, string message) where T : class
+        public static void IsNull<T>(T value, string message)
+            where T : class
         {
             if (value != null)
             {
@@ -148,7 +150,8 @@ namespace FirePatrol
             }
         }
 
-        public static void IsNull<T>(T value, string message, object arg1) where T : class
+        public static void IsNull<T>(T value, string message, object arg1)
+            where T : class
         {
             if (value != null)
             {
@@ -181,7 +184,8 @@ namespace FirePatrol
             object arg2,
             object arg3,
             object arg4
-        ) where T : class
+        )
+            where T : class
         {
             if (value != null)
             {
@@ -189,7 +193,8 @@ namespace FirePatrol
             }
         }
 
-        public static void IsNotNull<T>(T value) where T : class
+        public static void IsNotNull<T>(T value)
+            where T : class
         {
             if (value == null)
             {
@@ -197,7 +202,8 @@ namespace FirePatrol
             }
         }
 
-        public static void IsNotNull<T>(T value, string message) where T : class
+        public static void IsNotNull<T>(T value, string message)
+            where T : class
         {
             if (value == null)
             {
@@ -205,7 +211,8 @@ namespace FirePatrol
             }
         }
 
-        public static void IsNotNull<T>(T value, string message, object arg1) where T : class
+        public static void IsNotNull<T>(T value, string message, object arg1)
+            where T : class
         {
             if (value == null)
             {
@@ -228,7 +235,8 @@ namespace FirePatrol
             object arg1,
             object arg2,
             object arg3
-        ) where T : class
+        )
+            where T : class
         {
             if (value == null)
             {
@@ -243,7 +251,8 @@ namespace FirePatrol
             object arg2,
             object arg3,
             object arg4
-        ) where T : class
+        )
+            where T : class
         {
             if (value == null)
             {
@@ -256,7 +265,8 @@ namespace FirePatrol
             Throws<Exception>(action);
         }
 
-        public static void Throws<T>(Action action) where T : Exception
+        public static void Throws<T>(Action action)
+            where T : Exception
         {
             try
             {
@@ -280,10 +290,7 @@ namespace FirePatrol
 
         public static AssertException CreateException(string message, params object[] args)
         {
-            return new AssertException(
-                "Assert hit!  Details: {0}",
-                string.Format(message, args)
-            );
+            return new AssertException("Assert hit!  Details: {0}", string.Format(message, args));
         }
     }
 }
