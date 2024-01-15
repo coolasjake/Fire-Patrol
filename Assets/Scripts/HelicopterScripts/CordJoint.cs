@@ -8,8 +8,9 @@ public class CordJoint : MonoBehaviour
     private Rigidbody RB;
     public Rigidbody connectedBody;
     public bool autoConfigureLength = true;
-    public float cordStartingLength = 1f;
-    public float elasticity = 1f;
+    public float cordLength = 1f;
+    public float elasticStrength = 1f;
+    public float maxStretch = 1f;
 
     private void OnEnable()
     {
@@ -25,7 +26,7 @@ public class CordJoint : MonoBehaviour
     void Start()
     {
         if (connectedBody != null)
-            cordStartingLength = (RB.position - connectedBody.position).magnitude;
+            cordLength = (RB.position - connectedBody.position).magnitude;
     }
 
     // Update is called once per frame
@@ -38,12 +39,9 @@ public class CordJoint : MonoBehaviour
         }
 
         //Only apply forces if the body is further than the minimum length of the cord.
-        if (Utility.WithinRange(RB.position, connectedBody.position, cordStartingLength) == false)
+        if (Utility.WithinRange(RB.position, connectedBody.position, cordLength) == false)
         {
-            if (elasticity <= 0)
-                RigidCord();
-            else
-                ElasticCord();
+            ElasticCord();
         }
     }
 
@@ -52,11 +50,18 @@ public class CordJoint : MonoBehaviour
         Vector3 relativePos = RB.position - connectedBody.position;
         Vector3 relativeDir = relativePos.normalized;
         float dist = relativePos.magnitude;
-        float stretching = dist - cordStartingLength;
+        float stretching = dist - cordLength;
 
-        Vector3 elasticForce = (elasticity * stretching * stretching) / Time.fixedDeltaTime * -relativeDir;
+        Vector3 elasticForce = (elasticStrength * stretching * stretching) / Time.fixedDeltaTime * -relativeDir;
         RB.AddForce(elasticForce);
         connectedBody.AddForce(-elasticForce);
+
+        if (stretching > maxStretch)
+        {
+            Vector3 tautForce = -Physics.gravity.magnitude * RB.mass * relativeDir;
+            RB.AddForce(tautForce);
+            connectedBody.AddForce(-tautForce);
+        }
     }
 
     private void RigidCord()
@@ -65,7 +70,7 @@ public class CordJoint : MonoBehaviour
         Vector3 relativeDir = relativePos.normalized;
 
         //Snap back to max dist
-        Vector3 snappedPos = connectedBody.position + (relativeDir * cordStartingLength);
+        RB.position = connectedBody.position + (relativeDir * cordLength);
 
         //Add a force towards the pivot which is weaker when the existing velocity is not directly away from the pivot.
         float alignment = Vector3.Dot(RB.velocity.normalized, relativeDir);
@@ -84,14 +89,16 @@ public class CordJoint : MonoBehaviour
         if (connectedBody == null)
         {
             UnityEditor.Handles.color = Color.red;
-            UnityEditor.Handles.DrawWireDisc(RB.position, Vector3.right, autoConfigureLength ? 2 : cordStartingLength);
+            UnityEditor.Handles.DrawWireDisc(RB.position, Vector3.right, autoConfigureLength ? 2 : cordLength);
         }
         else
         {
             UnityEditor.Handles.color = Color.blue;
             if (autoConfigureLength && !Application.isPlaying)
-                cordStartingLength = (RB.position - connectedBody.position).magnitude;
-            UnityEditor.Handles.DrawWireDisc(connectedBody.position, Vector3.right, cordStartingLength);
+                cordLength = (RB.position - connectedBody.position).magnitude;
+            UnityEditor.Handles.DrawWireDisc(connectedBody.position, Vector3.right, cordLength);
+            UnityEditor.Handles.color = Color.red;
+            UnityEditor.Handles.DrawWireDisc(connectedBody.position, Vector3.right, cordLength + maxStretch);
         }
     }
 #endif
