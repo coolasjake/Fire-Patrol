@@ -234,9 +234,20 @@ public static class Utility
         return new Vector3(v.x, 0, v.y);
     }
 
+    /// <summary> Change a vector3 into a vector2 as if the V2 is horizontal instead of vertical (so that the z value becomes the y value, and the v3 y value is deleted). </summary>
+    public static Vector2 ToVector2(this Vector3 v)
+    {
+        return new Vector2(v.x, v.z);
+    }
+
     public static bool WithinRange(Vector3 pointA, Vector3 pointB, float range)
     {
         return (Vector3.SqrMagnitude(pointA - pointB) < range * range);
+    }
+
+    public static bool WithinRange(Vector2 pointA, Vector2 pointB, float range)
+    {
+        return (Vector2.SqrMagnitude(pointA - pointB) < range * range);
     }
 
     public static bool IsSameAs(this Vector3 vectorA, Vector3 vectorB, int accuracyMultiplier)
@@ -254,6 +265,16 @@ public static class Utility
     }
 
     public static bool SmallerThan(this Vector3 vector, float magnitude)
+    {
+        return (vector.sqrMagnitude < magnitude * magnitude);
+    }
+
+    public static bool LargerThan(this Vector2 vector, float magnitude)
+    {
+        return (vector.sqrMagnitude > magnitude * magnitude);
+    }
+
+    public static bool SmallerThan(this Vector2 vector, float magnitude)
     {
         return (vector.sqrMagnitude < magnitude * magnitude);
     }

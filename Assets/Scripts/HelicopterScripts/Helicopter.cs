@@ -14,6 +14,10 @@ public class Helicopter : MonoBehaviour
     [Min(0.001f)]
     public float accelleration = 5f;
 
+    [Tooltip("Bonus to accelleration when trying to slow down.")]
+    [Range(0f, 1f)]
+    public float deccellerationBonus = 0.5f;
+
     [Tooltip("How steep the helicopter tilt it (doesn't effect movement).")]
     [Min(0.001f)]
     public float tiltAmount = 1f;
@@ -21,6 +25,9 @@ public class Helicopter : MonoBehaviour
     [Tooltip("How quickly the helicopter changes the angle it's tilted in - effects responsiveness.")]
     [Min(0.001f)]
     public float tiltSpeed = 1f;
+
+    [Tooltip("Apply an automatic decelleration input when the input values are zero (or very small).")]
+    public bool decellerateOnNoInput = true;
 
     [Header("Turning Settings")]
     [Tooltip("How quickly the helicopter turns to face the input direction - effects responsiveness based on alignment bonus.")]
@@ -76,15 +83,18 @@ public class Helicopter : MonoBehaviour
     #region Movement (Input and Physics)
     private Vector2 GetInput()
     {
-        Vector3 input = new Vector3();
+        Vector2 input = new Vector2();
         input.x = Input.GetAxis("Horizontal");
         input.y = Input.GetAxis("Vertical");
+        if (decellerateOnNoInput && input.SmallerThan(0.01f) && RB.velocity.LargerThan(maxSpeed * 0.01f))
+            input = -RB.velocity.ToVector2();
         return input;
     }
 
     private void ApplyPropellorForce()
     {
-        RB.velocity += _tiltDir * accelleration * Time.deltaTime;
+        float decellBonus = 1f + Mathf.Max(0, -Vector3.Dot(_tiltDir.normalized, RB.velocity.normalized)) * deccellerationBonus;
+        RB.velocity += _tiltDir * decellBonus * accelleration * Time.deltaTime;
     }
 
     private void RotateHelicopter(Vector2 input)

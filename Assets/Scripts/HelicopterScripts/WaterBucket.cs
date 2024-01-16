@@ -15,7 +15,7 @@ public class WaterBucket : MonoBehaviour
 
     public Rigidbody RB;
     public CordJoint cord;
-    public GameObject waterBlob;
+    public WaterSplash waterBlob;
 
     // Start is called before the first frame update
     void Start()
@@ -39,8 +39,10 @@ public class WaterBucket : MonoBehaviour
 
     private void LaunchWater()
     {
-        _lastWaterLaunch = Time.time;
         _hasWater = false;
+        _lastWaterLaunch = Time.time;
+        WaterSplash water = Instantiate(waterBlob, transform.position, Quaternion.identity);
+        water.RB.velocity = RB.velocity;
     }
 
     private void LowerBucket()
