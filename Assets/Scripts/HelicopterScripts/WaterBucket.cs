@@ -9,6 +9,7 @@ public class WaterBucket : MonoBehaviour
     public float testWaterLength = 7f;
     public float launchToLowerDelay = 0.5f;
     public float winchSpeed = 1f;
+    public bool startWithWater = true;
 
     private bool _hasWater = false;
     private float _lastWaterLaunch = 0f;
@@ -20,7 +21,8 @@ public class WaterBucket : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        raisedLength = cord.cordLength;
+        _hasWater = startWithWater;
     }
 
     // Update is called once per frame

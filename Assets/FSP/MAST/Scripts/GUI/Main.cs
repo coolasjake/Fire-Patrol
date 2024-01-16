@@ -436,7 +436,7 @@ namespace MAST
                         
                         // If not already painting and the left mouse button pressed
                         if (MAST.GUI.DataManager.state.previousPaintToolIndex != 1)
-                            if (currentEvent.type == EventType.MouseDown && currentEvent.button == 0)
+                            if (currentEvent.type == EventType.MouseDown && currentEvent.button == 0 && !currentEvent.alt)
                             {
                                 // Start painting
                                 MAST.GUI.DataManager.state.previousPaintToolIndex = 1;
@@ -472,7 +472,7 @@ namespace MAST
                         
                         // If not already painting and the left mouse button pressed
                         if (MAST.GUI.DataManager.state.previousPaintToolIndex != 2)
-                            if (currentEvent.type == EventType.MouseDown && currentEvent.button == 0)
+                            if (currentEvent.type == EventType.MouseDown && currentEvent.button == 0 && !currentEvent.alt)
                             {
                                 // Start restoring
                                 MAST.GUI.DataManager.state.previousPaintToolIndex = 2;
@@ -518,7 +518,7 @@ namespace MAST
                     case 1:
                         // If not already drawing and the left mouse button pressed
                         if (MAST.GUI.DataManager.state.previousBuildToolIndex != 1)
-                            if (currentEvent.type == EventType.MouseDown && currentEvent.button == 0)
+                            if (currentEvent.type == EventType.MouseDown && currentEvent.button == 0 && !currentEvent.alt)
                             {
                                 // Start drawing
                                 MAST.GUI.DataManager.state.previousBuildToolIndex = 1;
@@ -544,7 +544,7 @@ namespace MAST
                     case 2:
                         // If not already painting and the left mouse button pressed
                         if (MAST.GUI.DataManager.state.previousBuildToolIndex != 2)
-                            if (currentEvent.type == EventType.MouseDown && currentEvent.button == 0)
+                            if (currentEvent.type == EventType.MouseDown && currentEvent.button == 0 && !currentEvent.alt)
                             {
                                 // Start drawing
                                 MAST.GUI.DataManager.state.previousBuildToolIndex = 2;
@@ -575,7 +575,7 @@ namespace MAST
                     // Randomizer tool
                     case 3:
                         // If left mouse button was clicked
-                        if (currentEvent.type == EventType.MouseDown && currentEvent.button == 0)
+                        if (currentEvent.type == EventType.MouseDown && currentEvent.button == 0 && !currentEvent.alt)
                         {
                             // Keep mouseclick from selecting other objects
                             GUIUtility.hotControl = GUIUtility.GetControlID(FocusType.Passive);
@@ -590,7 +590,7 @@ namespace MAST
                     case 4:
                         // If not already erasing and the left mouse button pressed
                         if (MAST.GUI.DataManager.state.previousBuildToolIndex != 4)
-                            if (currentEvent.type == EventType.MouseDown && currentEvent.button == 0)
+                            if (currentEvent.type == EventType.MouseDown && currentEvent.button == 0 && !currentEvent.alt)
                             {
                                 // Start drawing
                                 MAST.GUI.DataManager.state.previousBuildToolIndex = 4;

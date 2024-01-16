@@ -7,7 +7,6 @@ namespace FirePatrol
     public class GameSettings : ScriptableObject
     {
         public LogLevel MaxLogLevel = LogLevel.Info;
-        public TileTesterSettings TileTester;
 
         static GameSettings _instance;
         static bool _hasLoaded;
