@@ -22,10 +22,7 @@ namespace FirePatrol
     public class TileSettings
     {
         public List<TilePrefabLink> GrassPrefabLinks;
-        public List<TilePrefabLink> SandPrefabLinks;
-
         public TilePrefabVariations[] GrassPrefabVariations;
-        public TilePrefabVariations[] SandPrefabVariations;
     }
 
     // [CreateAssetMenu(fileName = "LevelEditorSettings", menuName = "level editor settings")]

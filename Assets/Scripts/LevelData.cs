@@ -19,7 +19,6 @@ namespace FirePatrol
     {
         Sand,
         Grass,
-        Water
     }
 
     [Serializable]

@@ -10,10 +10,10 @@ namespace FirePatrol
 {
     public class LevelEditorWindowImpl : IDisposable
     {
-        enum BrushType {
-            Water,
+        enum BrushType 
+        {
             Grass,
-            Sand,
+            Water,
             Trees,
             Rocks,
             GrassTufts,
@@ -24,6 +24,7 @@ namespace FirePatrol
 
         static readonly Color SELECTED_COLOR = Color.green;
         const int TILE_TYPE_ALL_GRASS = 15;
+        const int TILE_TYPE_ALL_SAND = 0;
         const float MIN_TILE_SCALE = 0.1f;
 
         BrushType? _currentBrush = null;
@@ -218,13 +219,10 @@ namespace FirePatrol
         {
             switch (brushType)
             {
-                case BrushType.Water:
-                    return PointTypes.Water;
-
                 case BrushType.Grass:
                     return PointTypes.Grass;
 
-                case BrushType.Sand:
+                case BrushType.Water:
                     return PointTypes.Sand;
 
                 default:
@@ -239,49 +237,14 @@ namespace FirePatrol
             var p3 = levelData.GetPointData(tile.Row + 1, tile.Col + 1).Type;
             var p4 = levelData.GetPointData(tile.Row + 1, tile.Col).Type;
 
-            var allTypes = new [] { p1, p2, p3, p4 };
             int type = 0;
 
-            if (allTypes.Contains(PointTypes.Water) )
-            {
-                Assert.That(!allTypes.Contains(PointTypes.Grass));
-
-                if (p1 == PointTypes.Sand) type += 1;
-                if (p2 == PointTypes.Sand) type += 2;
-                if (p3 == PointTypes.Sand) type += 4;
-                if (p4 == PointTypes.Sand) type += 8;
-
-                type += 16;
-            }
-            else
-            {
-                if (p1 == PointTypes.Grass) type += 1;
-                if (p2 == PointTypes.Grass) type += 2;
-                if (p3 == PointTypes.Grass) type += 4;
-                if (p4 == PointTypes.Grass) type += 8;
-            }
+            if (p1 == PointTypes.Grass) type += 1;
+            if (p2 == PointTypes.Grass) type += 2;
+            if (p3 == PointTypes.Grass) type += 4;
+            if (p4 == PointTypes.Grass) type += 8;
 
             return type;
-        }
-
-        List<PointData> GetPointNeighbours(PointData pointData, LevelData levelData)
-        {
-            var neighbours = new List<PointData>();
-
-            for (int i = pointData.Row - 1; i <= pointData.Row + 1; i++)
-            {
-                for (int k = pointData.Col - 1; k <= pointData.Col + 1; k++)
-                {
-                    var neighbour = levelData.TryGetPointData(i, k);
-
-                    if (neighbour != null)
-                    {
-                        neighbours.Add(neighbour);
-                    }
-                }
-            }
-
-            return neighbours;
         }
 
         List<TileData> GetAssociatedTiles(PointData pointData, LevelData levelData)
@@ -332,6 +295,9 @@ namespace FirePatrol
             {
                 Handles.DrawWireArc(_highlightedPoint.Position, Vector3.up, Vector3.forward, 360, levelData.TileSize * 0.25f);
             }
+
+            var totalSize = levelData.TileSize * levelData.TilesPerRow;
+            Handles.DrawWireCube(Vector3.zero, new Vector3(totalSize, 0, totalSize));
         }
 
         void ApplyBrushToPoint(BrushType brush, PointData pointData)
@@ -343,61 +309,30 @@ namespace FirePatrol
                 return;
             }
 
+            var levelData = GetLevelData();
+
+            if (pointData.Row == 0 || pointData.Col == 0 || pointData.Row == levelData.PointsPerRow - 1 || pointData.Col == levelData.PointsPerRow - 1)
+            {
+                Assert.That(pointData.Type == PointTypes.Sand);
+                return;
+            }
+
             Log.Info("[LevelEditorWindowImpl] Applying brush {0} to point {1}", brush, pointData.Id);
 
             MarkSceneDirty();
 
-            var levelData = GetLevelData();
-
-            var dirtyPoints = new List<PointData>() { pointData };
             pointData.Type = newPointType;
 
-            if (newPointType == PointTypes.Grass)
+            foreach (var tileData in GetAssociatedTiles(pointData, levelData))
             {
-                foreach (var neighbour in GetPointNeighbours(pointData, levelData))
+                var newTileType = ClassifyTileType(tileData, levelData);
+
+                if (newTileType != tileData.TileType)
                 {
-                    if (neighbour.Type == PointTypes.Water)
-                    {
-                        neighbour.Type = PointTypes.Sand;
-                        dirtyPoints.Add(neighbour);
-                    }
-                }
-            }
-            else if (newPointType == PointTypes.Water)
-            {
-                foreach (var neighbour in GetPointNeighbours(pointData, levelData))
-                {
-                    if (neighbour.Type == PointTypes.Grass)
-                    {
-                        neighbour.Type = PointTypes.Sand;
-                        dirtyPoints.Add(neighbour);
-                    }
-                }
-            }
+                    tileData.TileType = newTileType;
+                    UpdateTileModel(tileData, levelData);
 
-            var dirtyTiles = new HashSet<int>();
-
-            foreach (var dirtyPoint in dirtyPoints)
-            {
-                foreach (var tileData in GetAssociatedTiles(dirtyPoint, levelData))
-                {
-                    dirtyTiles.Add(tileData.Id);
-                }
-            }
-
-            Log.Debug("[LevelEditorWindowImpl] Found {0} dirty tiles after changing point: {1}", dirtyTiles.Count, string.Join(", ", dirtyTiles.Select(x => x.ToString()).ToArray()));
-
-            foreach (var id in dirtyTiles)
-            {
-                var tile = levelData.GetTileDataById(id);
-                var newTileType = ClassifyTileType(tile, levelData);
-
-                if (newTileType != tile.TileType)
-                {
-                    tile.TileType = newTileType;
-                    UpdateTileModel(tile, levelData);
-
-                    Log.Debug("[LevelEditorWindowImpl] Updated tile model for tile {0}", tile.Id);
+                    Log.Debug("[LevelEditorWindowImpl] Updated tileData model for tileData {0}", tileData.Id);
                 }
             }
         }
@@ -543,22 +478,12 @@ namespace FirePatrol
             float rotation;
             List<GameObject> prefabVariations;
 
-            if (type > 15)
-            {
-                type -= 16;
+            Assert.That(type >= 0 && type <= 15);
 
-                var linkInfo = tileSettings.SandPrefabLinks[type];
-                rotation = linkInfo.Rotation;
-                var prefabIndex = linkInfo.PrefabIndex;
-                prefabVariations = tileSettings.SandPrefabVariations.Where(x => x.PrefabIndex == prefabIndex).Single().Prefabs;
-            }
-            else
-            {
-                var linkInfo = tileSettings.GrassPrefabLinks[type];
-                rotation = linkInfo.Rotation;
-                var prefabIndex = linkInfo.PrefabIndex;
-                prefabVariations = tileSettings.GrassPrefabVariations.Where(x => x.PrefabIndex == prefabIndex).Single().Prefabs;
-            }
+            var linkInfo = tileSettings.GrassPrefabLinks[type];
+            rotation = linkInfo.Rotation;
+            var prefabIndex = linkInfo.PrefabIndex;
+            prefabVariations = tileSettings.GrassPrefabVariations.Where(x => x.PrefabIndex == prefabIndex).Single().Prefabs;
 
             var prefab = prefabVariations[UnityEngine.Random.Range(0, prefabVariations.Count)];
             Assert.IsNotNull(prefab);
@@ -642,7 +567,7 @@ namespace FirePatrol
                 {
                     var pointData = new PointData()
                     {
-                        Type = PointTypes.Grass,
+                        Type = PointTypes.Sand,
                         Position = new Vector3(k * cellSize, 0, i * cellSize) + globalOffset,
                         Row = i,
                         Col = k,
@@ -663,7 +588,7 @@ namespace FirePatrol
 
                     var tileData = new TileData()
                     {
-                        TileType = TILE_TYPE_ALL_GRASS,
+                        TileType = TILE_TYPE_ALL_SAND,
                         CenterPosition = center + globalOffset,
                         Row = i,
                         Col = k,
@@ -706,19 +631,14 @@ namespace FirePatrol
 
                 using (GuiHelper.HorizontalBlock())
                 {
-                    if (GUILayout.Button("Water", _currentBrush == BrushType.Water ? GetSelectedButtonStyle() : regularButtonStyle))
-                    {
-                        _currentBrush = BrushType.Water;
-                    }
-
                     if (GUILayout.Button("Grass", _currentBrush == BrushType.Grass ? GetSelectedButtonStyle() : regularButtonStyle))
                     {
                         _currentBrush = BrushType.Grass;
                     }
 
-                    if (GUILayout.Button("Sand", _currentBrush == BrushType.Sand ? GetSelectedButtonStyle() : regularButtonStyle))
+                    if (GUILayout.Button("Water", _currentBrush == BrushType.Water ? GetSelectedButtonStyle() : regularButtonStyle))
                     {
-                        _currentBrush = BrushType.Sand;
+                        _currentBrush = BrushType.Water;
                     }
                 }
 
