@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEditor.SceneManagement;
 using System.Linq;
+using System.IO;
+using System;
 
 namespace FirePatrol
 {
     public static class TileMenuItems
     {
-        const string CLEANED_PREFAB_SAVE_DIR = "Assets/Prefabs/Steve/Tiles/Cleaned";
+        const string CLEANED_PREFAB_SAVE_DIR = "Prefabs/Steve/Tiles/Cleaned";
 
         [MenuItem("Svkj/Save Clean Version")]
         public static void SaveCleanVersion()
@@ -29,13 +31,45 @@ namespace FirePatrol
                 var meshFilter = mergedGameObj.GetComponentInChildren<MeshFilter>();
                 var mesh = meshFilter.sharedMesh;
 
-                var meshAssetPath = CLEANED_PREFAB_SAVE_DIR + $"/{tileName}.asset";
+                // What follows here is a ridiculous hack to workaround unity's flakiness with
+                // serializing mesh references
+                // For unknown reasons, updating the existing mesh asset at the existing path
+                // does not work, even if the existing mesh is deleted first
+                // Therefore we need to create a new mesh asset at a new asset path
+                // and delete the old one
+                var meshFileBaseName = $"{tileName}_Merged";
+                var outputDir = Path.Combine(Application.dataPath, CLEANED_PREFAB_SAVE_DIR);
+                var deletedExistingMesh = false;
+
+                foreach (var path in Directory.GetFiles(outputDir))
+                {
+                    var fileName = Path.GetFileName(path);
+                    if (fileName.StartsWith(meshFileBaseName) && fileName.EndsWith(".asset"))
+                    {
+                        Assert.That(!deletedExistingMesh);
+                        File.Delete(path);
+                        Log.Debug($"[TileMenuItems] Deleted existing mesh at path {path}");
+
+                        var metaPath = path + ".meta";
+
+                        if (File.Exists(metaPath))
+                        {
+                            File.Delete(metaPath);
+                        }
+
+                        deletedExistingMesh = true;
+                    }
+                }
+
+                AssetDatabase.Refresh();
+
+                var meshAssetPath = "Assets/" + CLEANED_PREFAB_SAVE_DIR + $"/{tileName}_Merged_{UnityEngine.Random.Range(1, 99999999)}.asset";
                 AssetDatabase.CreateAsset(mesh, meshAssetPath);
                 AssetDatabase.SaveAssets();
 
                 meshFilter.sharedMesh = AssetDatabase.LoadAssetAtPath<Mesh>(meshAssetPath);
 
-                var prefabSavePath = CLEANED_PREFAB_SAVE_DIR + $"/{tileName}_Merged.prefab";
+                var prefabSavePath = "Assets/" + CLEANED_PREFAB_SAVE_DIR + $"/{tileName}_Merged.prefab";
                 PrefabUtility.SaveAsPrefabAsset(mergedGameObj, prefabSavePath);
 
                 Debug.Log($"Successfully saved clean version at {prefabSavePath}");

@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 namespace FirePatrol
 {
@@ -35,6 +36,11 @@ namespace FirePatrol
         bool _isPainting;
         int _regeneratePointsPerRow = 0;
         float _regenerateTileScale = 0;
+
+        void MarkSceneDirty()
+        {
+            EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+        }
 
         void LoadCursorTextures()
         {
@@ -339,6 +345,8 @@ namespace FirePatrol
 
             Log.Info("[LevelEditorWindowImpl] Applying brush {0} to point {1}", brush, pointData.Id);
 
+            MarkSceneDirty();
+
             var levelData = GetLevelData();
 
             var dirtyPoints = new List<PointData>() { pointData };
@@ -528,6 +536,8 @@ namespace FirePatrol
 
         GameObject InstantiateTile(Vector3 center, int type, LevelData levelData)
         {
+            MarkSceneDirty();
+
             var tileSettings = _settings.TileSettings;
 
             float rotation;
@@ -564,13 +574,14 @@ namespace FirePatrol
 
         void UpdateTileModel(TileData tileData, LevelData levelData)
         {
+            MarkSceneDirty();
+
             if (tileData.Model != null)
             {
                 GameObject.DestroyImmediate(tileData.Model);
             }
 
             tileData.Model = InstantiateTile(tileData.CenterPosition, tileData.TileType, levelData);
-            tileData.Model.name = "Tile" + tileData.Id;
         }
 
         GameObject GetTilesParent()
@@ -580,6 +591,7 @@ namespace FirePatrol
             if (tilesParent == null)
             {
                 tilesParent = new GameObject("Tiles");
+                MarkSceneDirty();
             }
 
             return tilesParent;
@@ -589,6 +601,7 @@ namespace FirePatrol
         {
             Log.Info("[LevelEditorWindowImpl] Generating tiles...");
 
+            MarkSceneDirty();
             Assert.That(_regeneratePointsPerRow >= 2);
             Assert.That(_regenerateTileScale >= 0);
 
