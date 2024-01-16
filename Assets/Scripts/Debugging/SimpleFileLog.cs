@@ -21,7 +21,7 @@ namespace FirePatrol
 
             _filePath = filePath;
 
-            _streamWriter = new StreamWriter(_filePath, append: true) { AutoFlush = true };
+            _streamWriter = new StreamWriter(_filePath, append: false) { AutoFlush = true };
 
             _timer = Stopwatch.StartNew();
         }
