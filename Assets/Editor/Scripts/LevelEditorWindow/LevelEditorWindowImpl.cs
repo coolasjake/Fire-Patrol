@@ -10,33 +10,42 @@ namespace FirePatrol
 {
     public class LevelEditorWindowImpl : IDisposable
     {
-        enum BrushType 
+        public enum BrushTypes
         {
             Grass,
             Water,
+
             Trees,
-            Rocks,
-            GrassTufts,
             Flowers,
             Mushrooms,
+            GrassTufts,
+            Rocks,
             PropEraser,
         }
 
         static readonly Color SELECTED_COLOR = Color.green;
         const int TILE_TYPE_ALL_GRASS = 15;
-        const int TILE_TYPE_ALL_SAND = 0;
+        const int TILE_TYPE_ALL_WATER = 0;
         const float MIN_TILE_SCALE = 0.1f;
+        const float LOW_GRASS_HEIGHT = 1.25f;
+        const float HIGH_GRASS_HEIGHT = 2.25f;
+        const float NON_TREE_BRUSH_SIZE = 1.0f;
 
-        BrushType? _currentBrush = null;
-        Dictionary<BrushType, Texture2D> _brushCursors;
+        BrushTypes? _currentBrush = null;
+        PointTypes _defaultPointType = PointTypes.Grass;
+        Dictionary<BrushTypes, Texture2D> _brushCursors;
         Action<SceneView> _onSceneGuiHandler;
         GUIStyle _selectedButtonStyle;
         LevelEditorSettings _settings;
         TileData _highlightedTile;
         PointData _highlightedPoint;
+        Vector3? _highlightedPropPosition;
+
         bool _isPainting;
         int _regeneratePointsPerRow = 0;
         float _regenerateTileScale = 0;
+        float _treeBrushSize = 25.0f;
+        float _nonTreeBrushSize = 5.0f;
 
         void MarkSceneDirty()
         {
@@ -45,9 +54,9 @@ namespace FirePatrol
 
         void LoadCursorTextures()
         {
-            _brushCursors = new Dictionary<BrushType, Texture2D>();
+            _brushCursors = new Dictionary<BrushTypes, Texture2D>();
 
-            foreach (var brushType in Enum.GetValues(typeof(BrushType)).OfType<BrushType>())
+            foreach (var brushType in Enum.GetValues(typeof(BrushTypes)).OfType<BrushTypes>())
             {
                 var assetPath = $"Assets/Editor/Textures/Cursors/{brushType.ToString()}.png";
                 var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(assetPath);
@@ -96,7 +105,34 @@ namespace FirePatrol
             SceneView.duringSceneGui -= _onSceneGuiHandler;
         }
 
-        Vector3? TryGetGridMouseIntersectionPoint(Vector2 mousePos)
+        Vector3? TryGetTerrainIntersectionPoint(Vector2 mousePos)
+        {
+            Ray ray = HandleUtility.GUIPointToWorldRay(mousePos);
+
+            int layerMask = LayerMask.GetMask("Terrain");
+
+            if (Physics.Raycast(ray.origin, ray.direction, out var hit, Mathf.Infinity, layerMask))
+            {
+                return hit.point;
+            }
+
+            return null;
+        }
+
+        Vector3? ProjectOntoTerrain(Vector3 pos)
+        {
+            Ray ray = new Ray(pos + Vector3.up, Vector3.down);
+            int layerMask = LayerMask.GetMask("Terrain");
+
+            if (Physics.Raycast(ray.origin, ray.direction, out var hit, Mathf.Infinity, layerMask))
+            {
+                return hit.point;
+            }
+
+            return null;
+        }
+
+        Vector3? TryGetGridMouseIntersectionPoint(Vector2 mousePos, float height)
         {
             Ray ray = HandleUtility.GUIPointToWorldRay(mousePos);
 
@@ -108,7 +144,8 @@ namespace FirePatrol
                 return null;
             }
 
-            float distance = -rayOrigin.y / rayDirection.y;
+            float distance = (height - rayOrigin.y) / rayDirection.y;
+
             Vector3 intersectionPoint = rayOrigin + rayDirection * distance;
 
             if (distance >= 0)
@@ -148,7 +185,7 @@ namespace FirePatrol
             return closestPoint;
         }
 
-        TileData GetClosestTile(Vector3 pos)
+        TileData TryGetClosestTile(Vector3 pos)
         {
             var levelData = GetLevelData();
 
@@ -179,7 +216,7 @@ namespace FirePatrol
 
         PointData TryGetPointAtScreenPoint(Vector2 screenPos, LevelData levelData)
         {
-            var gridPoint = TryGetGridMouseIntersectionPoint(screenPos);
+            var gridPoint = TryGetGridMouseIntersectionPoint(screenPos, 0);
 
             if (!gridPoint.HasValue)
             {
@@ -198,14 +235,19 @@ namespace FirePatrol
 
         TileData TryGetTileAtScreenPoint(Vector2 screenPos, LevelData levelData)
         {
-            var gridPoint = TryGetGridMouseIntersectionPoint(screenPos);
+            var gridPoint = TryGetGridMouseIntersectionPoint(screenPos, 0);
 
             if (!gridPoint.HasValue)
             {
                 return null;
             }
 
-            var tile = GetClosestTile(gridPoint.Value);
+            var tile = TryGetClosestTile(gridPoint.Value);
+
+            if (tile == null)
+            {
+                return null;
+            }
 
             if (Vector3.Distance(tile.CenterPosition, gridPoint.Value) < levelData.TileSize * 0.5)
             {
@@ -213,21 +255,6 @@ namespace FirePatrol
             }
 
             return null;
-        }
-
-        PointTypes BrushTypeToPointType(BrushType brushType)
-        {
-            switch (brushType)
-            {
-                case BrushType.Grass:
-                    return PointTypes.Grass;
-
-                case BrushType.Water:
-                    return PointTypes.Sand;
-
-                default:
-                    throw new ArgumentException($"Unexpected brush type {brushType}");
-            }
         }
 
         int ClassifyTileType(TileData tile, LevelData levelData)
@@ -247,26 +274,6 @@ namespace FirePatrol
             return type;
         }
 
-        List<TileData> GetAssociatedTiles(PointData pointData, LevelData levelData)
-        {
-            var tiles = new List<TileData>();
-
-            for (int i = pointData.Row - 1; i <= pointData.Row; i++)
-            {
-                for (int k = pointData.Col - 1; k <= pointData.Col; k++)
-                {
-                    var tile = levelData.TryGetTileData(i, k);
-
-                    if (tile != null)
-                    {
-                        tiles.Add(tile);
-                    }
-                }
-            }
-
-            return tiles;
-        }
-
         void OnGuiSceneTabRepaint(SceneView sceneView, LevelData levelData)
         {
             if (_currentBrush.HasValue)
@@ -282,6 +289,7 @@ namespace FirePatrol
                 Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
                 _highlightedTile = null;
                 _highlightedPoint = null;
+                _highlightedPropPosition = null;
             }
 
             Handles.color = Color.yellow;
@@ -296,13 +304,34 @@ namespace FirePatrol
                 Handles.DrawWireArc(_highlightedPoint.Position, Vector3.up, Vector3.forward, 360, levelData.TileSize * 0.25f);
             }
 
+            if (_highlightedPropPosition != null)
+            {
+                var radius = _currentBrush == BrushTypes.Trees ? _treeBrushSize : _nonTreeBrushSize;
+                Handles.DrawWireArc(_highlightedPropPosition.Value, Vector3.up, Vector3.forward, 360, radius);
+            }
+
             var totalSize = levelData.TileSize * levelData.TilesPerRow;
             Handles.DrawWireCube(Vector3.zero, new Vector3(totalSize, 0, totalSize));
         }
 
-        void ApplyBrushToPoint(BrushType brush, PointData pointData)
+        PointTypes GetPointTypeForBrush(BrushTypes brush)
         {
-            var newPointType = BrushTypeToPointType(brush);
+            switch (brush)
+            {
+                case BrushTypes.Grass:
+                    return PointTypes.Grass;
+
+                case BrushTypes.Water:
+                    return PointTypes.Water;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(brush), brush, null);
+            }
+        }
+
+        void ApplyBrushToPoint(BrushTypes brush, PointData pointData)
+        {
+            var newPointType = GetPointTypeForBrush(brush);
 
             if (pointData.Type == newPointType)
             {
@@ -313,7 +342,10 @@ namespace FirePatrol
 
             if (pointData.Row == 0 || pointData.Col == 0 || pointData.Row == levelData.PointsPerRow - 1 || pointData.Col == levelData.PointsPerRow - 1)
             {
-                Assert.That(pointData.Type == PointTypes.Sand);
+                if (pointData.Type != _defaultPointType)
+                {
+                    Log.Warn("Found non default point type at edge.  Expected {0} but found {1}", _defaultPointType, pointData.Type);
+                }
                 return;
             }
 
@@ -323,7 +355,7 @@ namespace FirePatrol
 
             pointData.Type = newPointType;
 
-            foreach (var tileData in GetAssociatedTiles(pointData, levelData))
+            foreach (var tileData in levelData.GetNeighbourTiles(pointData))
             {
                 var newTileType = ClassifyTileType(tileData, levelData);
 
@@ -337,6 +369,103 @@ namespace FirePatrol
             }
         }
 
+        void TryAddPropAt(TileData tile, GameObject prefab, Vector3 pos, PropInfo propInfo)
+        {
+            foreach (var existingProp in tile.Props)
+            {
+                if (existingProp.GameObject != null && existingProp.PropType == propInfo.PropType && (existingProp.GameObject.transform.position - pos).magnitude < propInfo.MinDistanceToOtherProps)
+                {
+                    return;
+                }
+            }
+
+            var instance = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+
+            instance.transform.position = pos;
+            instance.transform.rotation = Quaternion.AngleAxis(UnityEngine.Random.Range(0, 360), Vector3.up);
+
+            var scale = UnityEngine.Random.Range(propInfo.ScaleMin, propInfo.ScaleMax);
+            instance.transform.localScale = Vector3.one * scale;
+
+            instance.transform.SetParent(GetPropsParent().transform, false);
+
+            if (tile.Props == null)
+            {
+                tile.Props = new List<PropInstance>();
+            }
+
+            tile.Props.Add(new PropInstance()
+            {
+                GameObject = instance,
+                PropType = propInfo.PropType
+            });
+        }
+
+        void TryAddProp(Vector3 pos, BrushTypes brushType)
+        {
+            var tile = TryGetClosestTile(pos);
+
+            if (tile == null)
+            {
+                return;
+            }
+
+            if (tile.Props == null)
+            {
+                tile.Props = new List<PropInstance>();
+            }
+
+            MarkSceneDirty();
+
+            if (brushType == BrushTypes.PropEraser)
+            {
+                var radius = _nonTreeBrushSize;
+                var propsToDelete = new List<PropInstance>();
+
+                foreach (var existingProp in tile.Props)
+                {
+                    if (existingProp.GameObject != null && (existingProp.GameObject.transform.position - pos).magnitude < radius)
+                    {
+                        propsToDelete.Add(existingProp);
+                    }
+                }
+
+                foreach (var prop in propsToDelete)
+                {
+                    tile.Props.Remove(prop);
+                    GameObject.DestroyImmediate(prop.GameObject);
+                }
+            }
+            else
+            {
+                var propType = BrushTypeToPropType(brushType);
+                var propInfo = _settings.TileSettings.PropPrefabs.Where(x => x.PropType == propType).Single();
+
+                var prefab = propInfo.Prefabs[UnityEngine.Random.Range(0, propInfo.Prefabs.Count)];
+                var radius = _currentBrush == BrushTypes.Trees ? _treeBrushSize : _nonTreeBrushSize;
+                var numAttempts = Mathf.Max(1, (int)Mathf.Floor(0.01f * (_treeBrushSize * _treeBrushSize)));
+
+                for (int i = 0; i < numAttempts; i++)
+                {
+                    var relativePos = UnityEngine.Random.insideUnitCircle;
+
+                    // Increase probability of being closer to center
+                    relativePos = new Vector2(relativePos.x * relativePos.x, relativePos.y * relativePos.y);
+
+                    relativePos = relativePos * radius;
+
+                    var absPos = pos + new Vector3(relativePos.x, 0, relativePos.y);
+
+                    var adjustedPos = ProjectOntoTerrain(absPos);
+
+                    if (adjustedPos.HasValue && IsDirectlyOnFlatGrass(adjustedPos.Value))
+                    {
+                        TryAddPropAt(tile, prefab, adjustedPos.Value, propInfo);
+                    }
+                }
+            }
+        }
+
         void ApplyBrush(Vector2 screenPos, LevelData levelData)
         {
             if (!_currentBrush.HasValue)
@@ -346,18 +475,7 @@ namespace FirePatrol
 
             var currentBrush = _currentBrush.Value;
 
-            if (currentBrush == BrushType.Trees)
-            {
-                var tileUnderMouse = TryGetTileAtScreenPoint(screenPos, levelData);
-
-                if (tileUnderMouse != null)
-                {
-                    // currentBrush;
-                    // Log.Info("[LevelEditorWindowImpl] intersectionPoint = {0}", gridPoint);
-                    Log.Info("[LevelEditorWindowImpl] todo - increase trees");
-                }
-            }
-            else
+            if (currentBrush == BrushTypes.Grass || currentBrush == BrushTypes.Water)
             {
                 var pointUnderMouse = TryGetPointAtScreenPoint(screenPos, levelData);
 
@@ -366,6 +484,49 @@ namespace FirePatrol
                     ApplyBrushToPoint(currentBrush, pointUnderMouse);
                 }
             }
+            else
+            {
+                var gridPoint = TryGetTerrainIntersectionPoint(screenPos);
+
+                if (gridPoint != null && IsDirectlyOnFlatGrass(gridPoint.Value))
+                {
+                    TryAddProp(gridPoint.Value, currentBrush);
+                }
+            }
+        }
+
+        PropType BrushTypeToPropType(BrushTypes brush)
+        {
+            switch (brush)
+            {
+                case BrushTypes.Trees:
+                    return PropType.Tree;
+
+                case BrushTypes.Flowers:
+                    return PropType.Flower;
+
+                case BrushTypes.Mushrooms:
+                    return PropType.Mushroom;
+
+                case BrushTypes.GrassTufts:
+                    return PropType.GrassTuft;
+
+                case BrushTypes.Rocks:
+                    return PropType.Rock;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(brush), brush, null);
+            }
+        }
+
+        bool IsDirectlyOnFlatGrass(Vector3 pos)
+        {
+            if (Mathf.Abs(pos.y - LOW_GRASS_HEIGHT) < 0.01f)
+            {
+                return true;
+            }
+
+            return Mathf.Abs(pos.y - HIGH_GRASS_HEIGHT) < 0.01f;
         }
 
         void HighlightControlsAt(Vector2 screenPos, LevelData levelData)
@@ -377,23 +538,7 @@ namespace FirePatrol
 
             var currentBrush = _currentBrush.Value;
 
-            if (currentBrush == BrushType.Trees)
-            {
-                TileData tileUnderMouse = TryGetTileAtScreenPoint(screenPos, levelData);
-
-                if (tileUnderMouse != _highlightedTile)
-                {
-                    _highlightedTile = tileUnderMouse;
-                    SceneView.RepaintAll();
-                }
-
-                if (_highlightedPoint != null)
-                {
-                    _highlightedPoint = null;
-                    SceneView.RepaintAll();
-                }
-            }
-            else
+            if (currentBrush == BrushTypes.Grass || currentBrush == BrushTypes.Water)
             {
                 PointData pointUnderMouse = TryGetPointAtScreenPoint(screenPos, levelData);
 
@@ -402,12 +547,27 @@ namespace FirePatrol
                     _highlightedPoint = pointUnderMouse;
                     SceneView.RepaintAll();
                 }
+            }
+            else
+            {
+                var propPos = TryGetTerrainIntersectionPoint(screenPos);
 
-                if (_highlightedTile != null)
+                if (propPos.HasValue && !IsDirectlyOnFlatGrass(propPos.Value))
                 {
-                    _highlightedTile = null;
+                    propPos = null;
+                }
+
+                if (_highlightedPropPosition != propPos)
+                {
+                    _highlightedPropPosition = propPos;
                     SceneView.RepaintAll();
                 }
+            }
+
+            if (_highlightedTile != null)
+            {
+                _highlightedTile = null;
+                SceneView.RepaintAll();
             }
         }
 
@@ -475,13 +635,22 @@ namespace FirePatrol
 
             var tileSettings = _settings.TileSettings;
 
-            float rotation;
             List<GameObject> prefabVariations;
 
             Assert.That(type >= 0 && type <= 15);
 
             var linkInfo = tileSettings.GrassPrefabLinks[type];
-            rotation = linkInfo.Rotation;
+            float rotation;
+
+            if (type == 15)
+            {
+                rotation = UnityEngine.Random.Range(0, 4) * 90;
+            }
+            else
+            {
+                rotation = linkInfo.Rotation;
+            }
+
             var prefabIndex = linkInfo.PrefabIndex;
             prefabVariations = tileSettings.GrassPrefabVariations.Where(x => x.PrefabIndex == prefabIndex).Single().Prefabs;
 
@@ -504,6 +673,18 @@ namespace FirePatrol
             if (tileData.Model != null)
             {
                 GameObject.DestroyImmediate(tileData.Model);
+
+                if (tileData.Props == null)
+                {
+                    tileData.Props = new List<PropInstance>();
+                }
+
+                foreach (var prop in tileData.Props)
+                {
+                    GameObject.DestroyImmediate(prop.GameObject);
+                }
+
+                tileData.Props.Clear();
             }
 
             tileData.Model = InstantiateTile(tileData.CenterPosition, tileData.TileType, levelData);
@@ -522,6 +703,19 @@ namespace FirePatrol
             return tilesParent;
         }
 
+        GameObject GetPropsParent()
+        {
+            var propsParent = EditorSceneManager.GetActiveScene().GetRootGameObjects().Where(x => x.name == "Props").SingleOrDefault();
+
+            if (propsParent == null)
+            {
+                propsParent = new GameObject("Props");
+                MarkSceneDirty();
+            }
+
+            return propsParent;
+        }
+
         void RegenerateTiles()
         {
             Log.Info("[LevelEditorWindowImpl] Generating tiles...");
@@ -533,6 +727,11 @@ namespace FirePatrol
             var levelData = GetLevelData();
 
             foreach (GameObject child in UnityUtil.GetDirectChildren(GetTilesParent()))
+            {
+                GameObject.DestroyImmediate(child);
+            }
+
+            foreach (GameObject child in UnityUtil.GetDirectChildren(GetPropsParent()))
             {
                 GameObject.DestroyImmediate(child);
             }
@@ -561,13 +760,18 @@ namespace FirePatrol
             var totalSize = cellSize * tilesPerRow;
             var globalOffset = new Vector3(-totalSize / 2.0f, 0, -totalSize / 2.0f);
 
+            var defaultPointType = _defaultPointType;
+            var nonDefaultPointType = defaultPointType == PointTypes.Water ? PointTypes.Grass : PointTypes.Water;
+
             for (int i = 0; i < pointsPerRow; i++)
             {
                 for (int k = 0; k < pointsPerRow; k++)
                 {
+                    bool isAtEdge = i == 0 || i == pointsPerRow - 1 || k == 0 || k == pointsPerRow - 1;
+
                     var pointData = new PointData()
                     {
-                        Type = PointTypes.Sand,
+                        Type = isAtEdge ? defaultPointType : nonDefaultPointType,
                         Position = new Vector3(k * cellSize, 0, i * cellSize) + globalOffset,
                         Row = i,
                         Col = k,
@@ -588,13 +792,13 @@ namespace FirePatrol
 
                     var tileData = new TileData()
                     {
-                        TileType = TILE_TYPE_ALL_SAND,
                         CenterPosition = center + globalOffset,
                         Row = i,
                         Col = k,
                         Id = levelData.Tiles.Count,
                     };
 
+                    tileData.TileType = ClassifyTileType(tileData, levelData);
                     UpdateTileModel(tileData, levelData);
                     levelData.Tiles.Add(tileData);
                 }
@@ -620,63 +824,133 @@ namespace FirePatrol
         {
             var regularButtonStyle = GUI.skin.button;
 
-            using (GuiHelper.VerticalBox("Paint Brush"))
+            if (GUILayout.Button("Deselect Brush", _currentBrush == null ? GetSelectedButtonStyle() : regularButtonStyle))
             {
-                if (GUILayout.Button("None", _currentBrush == null ? GetSelectedButtonStyle() : regularButtonStyle))
-                {
-                    _currentBrush = null;
-                }
+                _currentBrush = null;
+                _highlightedPoint = null;
+                _highlightedPropPosition = null;
+                SceneView.RepaintAll();
+            }
 
-                GUILayout.Label("Tiles", EditorStyles.boldLabel);
+            using (GuiHelper.VerticalBox("Terrain"))
+            {
+                using (GuiHelper.HorizontalBlock())
+                {
+                    if (GUILayout.Button("Grass", _currentBrush == BrushTypes.Grass ? GetSelectedButtonStyle() : regularButtonStyle))
+                    {
+                        _currentBrush = BrushTypes.Grass;
+                        _highlightedPoint = null;
+                        _highlightedPropPosition = null;
+                        SceneView.RepaintAll();
+                    }
+
+                    if (GUILayout.Button("Water", _currentBrush == BrushTypes.Water ? GetSelectedButtonStyle() : regularButtonStyle))
+                    {
+                        _currentBrush = BrushTypes.Water;
+                        _highlightedPoint = null;
+                        _highlightedPropPosition = null;
+                        SceneView.RepaintAll();
+                    }
+                }
+            }
+
+            using (GuiHelper.VerticalBox("Props:"))
+            {
+                using (GuiHelper.HorizontalBlock())
+                {
+                    if (GUILayout.Button("Tree", _currentBrush == BrushTypes.Trees ? GetSelectedButtonStyle() : regularButtonStyle))
+                    {
+                        _currentBrush = BrushTypes.Trees;
+                        _highlightedPoint = null;
+                        _highlightedPropPosition = null;
+                        SceneView.RepaintAll();
+                    }
+
+                    if (GUILayout.Button("Flower", _currentBrush == BrushTypes.Flowers ? GetSelectedButtonStyle() : regularButtonStyle))
+                    {
+                        _currentBrush = BrushTypes.Flowers;
+                        _highlightedPoint = null;
+                        _highlightedPropPosition = null;
+                        SceneView.RepaintAll();
+                    }
+
+                    if (GUILayout.Button("Mushroom", _currentBrush == BrushTypes.Mushrooms ? GetSelectedButtonStyle() : regularButtonStyle))
+                    {
+                        _currentBrush = BrushTypes.Mushrooms;
+                        _highlightedPoint = null;
+                        _highlightedPropPosition = null;
+                        SceneView.RepaintAll();
+                    }
+                }
 
                 using (GuiHelper.HorizontalBlock())
                 {
-                    if (GUILayout.Button("Grass", _currentBrush == BrushType.Grass ? GetSelectedButtonStyle() : regularButtonStyle))
+                    if (GUILayout.Button("GrassTuft", _currentBrush == BrushTypes.GrassTufts ? GetSelectedButtonStyle() : regularButtonStyle))
                     {
-                        _currentBrush = BrushType.Grass;
+                        _currentBrush = BrushTypes.GrassTufts;
+                        _highlightedPoint = null;
+                        _highlightedPropPosition = null;
+                        SceneView.RepaintAll();
                     }
 
-                    if (GUILayout.Button("Water", _currentBrush == BrushType.Water ? GetSelectedButtonStyle() : regularButtonStyle))
+                    if (GUILayout.Button("Rock", _currentBrush == BrushTypes.Rocks ? GetSelectedButtonStyle() : regularButtonStyle))
                     {
-                        _currentBrush = BrushType.Water;
-                    }
-                }
-
-                GUILayout.Label("Props", EditorStyles.boldLabel);
-
-                using (GuiHelper.HorizontalBlock())
-                {
-                    if (GUILayout.Button("Trees", _currentBrush == BrushType.Trees ? GetSelectedButtonStyle() : regularButtonStyle))
-                    {
-                        _currentBrush = BrushType.Trees;
+                        _currentBrush = BrushTypes.Rocks;
+                        _highlightedPoint = null;
+                        _highlightedPropPosition = null;
+                        SceneView.RepaintAll();
                     }
 
-                    if (GUILayout.Button("Rocks", _currentBrush == BrushType.Rocks ? GetSelectedButtonStyle() : regularButtonStyle))
+                    if (GUILayout.Button("Eraser", _currentBrush == BrushTypes.PropEraser ? GetSelectedButtonStyle() : regularButtonStyle))
                     {
-                        _currentBrush = BrushType.Rocks;
-                    }
-
-                    if (GUILayout.Button("Grass Tufts", _currentBrush == BrushType.GrassTufts ? GetSelectedButtonStyle() : regularButtonStyle))
-                    {
-                        _currentBrush = BrushType.GrassTufts;
+                        _currentBrush = BrushTypes.PropEraser;
+                        _highlightedPoint = null;
+                        _highlightedPropPosition = null;
+                        SceneView.RepaintAll();
                     }
                 }
 
                 using (GuiHelper.HorizontalBlock())
                 {
-                    if (GUILayout.Button("Flowers", _currentBrush == BrushType.Flowers ? GetSelectedButtonStyle() : regularButtonStyle))
+                    GUILayout.Label("Tree Brush Size", EditorStyles.boldLabel);
+
+                    if (GUILayout.Button("-", GUILayout.Width(20)))
                     {
-                        _currentBrush = BrushType.Flowers;
+                        _treeBrushSize -= 5.0f;
                     }
 
-                    if (GUILayout.Button("Mushrooms", _currentBrush == BrushType.Mushrooms ? GetSelectedButtonStyle() : regularButtonStyle))
+                    _treeBrushSize = EditorGUILayout.FloatField(_treeBrushSize, GUILayout.Width(40));
+
+                    if (GUILayout.Button("+", GUILayout.Width(20)))
                     {
-                        _currentBrush = BrushType.Mushrooms;
+                        _treeBrushSize += 5.0f;
                     }
 
-                    if (GUILayout.Button("Eraser", _currentBrush == BrushType.PropEraser ? GetSelectedButtonStyle() : regularButtonStyle))
+                    if (_treeBrushSize <= 0)
                     {
-                        _currentBrush = BrushType.PropEraser;
+                        _treeBrushSize = 1;
+                    }
+                }
+
+                using (GuiHelper.HorizontalBlock())
+                {
+                    GUILayout.Label("Non Tree Brush Size", EditorStyles.boldLabel);
+
+                    if (GUILayout.Button("-", GUILayout.Width(20)))
+                    {
+                        _nonTreeBrushSize -= 5.0f;
+                    }
+
+                    _nonTreeBrushSize = EditorGUILayout.FloatField(_nonTreeBrushSize, GUILayout.Width(40));
+
+                    if (GUILayout.Button("+", GUILayout.Width(20)))
+                    {
+                        _nonTreeBrushSize += 5.0f;
+                    }
+
+                    if (_nonTreeBrushSize <= 0)
+                    {
+                        _nonTreeBrushSize = 1;
                     }
                 }
             }
@@ -735,6 +1009,23 @@ namespace FirePatrol
                     if (GUILayout.Button("+", GUILayout.Width(20)))
                     {
                         _regenerateTileScale += increment;
+                    }
+                }
+
+                var regularButtonStyle = GUI.skin.button;
+
+                using (GuiHelper.HorizontalBlock())
+                {
+                    GUILayout.Label("Default Tile", EditorStyles.boldLabel);
+
+                    if (GUILayout.Button("Grass", _defaultPointType == PointTypes.Grass ? GetSelectedButtonStyle() : regularButtonStyle))
+                    {
+                        _defaultPointType = PointTypes.Grass;
+                    }
+
+                    if (GUILayout.Button("Water", _defaultPointType == PointTypes.Water ? GetSelectedButtonStyle() : regularButtonStyle))
+                    {
+                        _defaultPointType = PointTypes.Water;
                     }
                 }
 

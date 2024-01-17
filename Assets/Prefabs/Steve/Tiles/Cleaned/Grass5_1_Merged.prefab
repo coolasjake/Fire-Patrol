@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 4611702336323186554}
   - component: {fileID: 2971360475173710465}
   - component: {fileID: 3957454796359767987}
-  m_Layer: 0
+  - component: {fileID: 5833032199953641825}
+  m_Layer: 8
   m_Name: Merged Meshes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +41,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3691421268346070296}
-  m_Mesh: {fileID: 4300000, guid: 3d1f7529365519a45abad2f0be6eb2e2, type: 2}
+  m_Mesh: {fileID: 4300000, guid: 2ff53fbdd0d8ba6419ddda4e158c0280, type: 2}
 --- !u!23 &3957454796359767987
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -69,9 +70,6 @@ MeshRenderer:
   - {fileID: 2100000, guid: 91ca050cabe34a442bd27b13c8c8ceb4, type: 2}
   - {fileID: 2100000, guid: 0a40af5bcefece446b466cd180dd5c14, type: 2}
   - {fileID: 2100000, guid: b586e6cb6f2717d4691931412eba15c8, type: 2}
-  - {fileID: 2100000, guid: 3ad674c2f9cedb642af62e9c7568c12f, type: 2}
-  - {fileID: 2100000, guid: e29ea14d28bfc914c9d59ba21a991057, type: 2}
-  - {fileID: 2100000, guid: 0eab663b891975a47b372c87c8c782ec, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -93,6 +91,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &5833032199953641825
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3691421268346070296}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 2ff53fbdd0d8ba6419ddda4e158c0280, type: 2}
 --- !u!1 &4610144654997910766
 GameObject:
   m_ObjectHideFlags: 0
@@ -102,7 +122,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6863169195725213371}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Grass5_1_Merged
   m_TagString: Untagged
   m_Icon: {fileID: 0}

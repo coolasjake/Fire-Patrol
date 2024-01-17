@@ -13,6 +13,23 @@ namespace FirePatrol
     {
         const string CLEANED_PREFAB_SAVE_DIR = "Prefabs/Steve/Tiles/Cleaned";
 
+        static void AssignLayerRecursively(GameObject obj, string layerName)
+        {
+            int layer = LayerMask.NameToLayer(layerName);
+            Assert.That(layer != -1);
+            SetLayer(obj, layer);
+        }
+
+        static void SetLayer(GameObject obj, int layer)
+        {
+            obj.layer = layer;
+
+            foreach (Transform child in obj.transform)
+            {
+                SetLayer(child.gameObject, layer);
+            }
+        }
+
         [MenuItem("Svkj/Save Clean Version")]
         public static void SaveCleanVersion()
         {
@@ -23,6 +40,8 @@ namespace FirePatrol
             Assert.That(tileName.StartsWith("Grass") || tileName.StartsWith("Sand"));
 
             var mergedGameObj = meshMerger.MergeMeshes(sourceObj);
+
+            AssignLayerRecursively(mergedGameObj, "Terrain");
 
             try
             {
@@ -69,8 +88,10 @@ namespace FirePatrol
 
                 meshFilter.sharedMesh = AssetDatabase.LoadAssetAtPath<Mesh>(meshAssetPath);
 
+                meshFilter.gameObject.AddComponent<MeshCollider>();
+
                 var prefabSavePath = "Assets/" + CLEANED_PREFAB_SAVE_DIR + $"/{tileName}_Merged.prefab";
-                PrefabUtility.SaveAsPrefabAsset(mergedGameObj, prefabSavePath);
+                PrefabUtility.SaveAsPrefabAssetAndConnect(mergedGameObj, prefabSavePath, InteractionMode.UserAction);
 
                 Debug.Log($"Successfully saved clean version at {prefabSavePath}");
             }
@@ -80,7 +101,7 @@ namespace FirePatrol
             }
         }
 
-        const float SnapGridSize = 0.5f;
+        const float SnapGridSize = 0.25f;
 
         private static Vector3 SnapToGrid(Vector3 pos)
         {

@@ -2,6 +2,7 @@ Shader "Flat Shaded" {
 	Properties {
 		_MainTex    ("Texture",       2D        ) = "white" {}
 		_BlendNormal("Blend Normals", Range(0,1)) = 0.5
+        _Color      ("Color",         Color) = (1,1,1,1)
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" "LightMode"="ForwardBase" }
@@ -33,6 +34,7 @@ Shader "Flat Shaded" {
 			sampler2D _MainTex;
 			float4    _MainTex_ST;
 			float     _BlendNormal;
+            float4 _Color;
 			
 			v2f vert (appdata v) {
 				v2f o;
@@ -57,7 +59,7 @@ Shader "Flat Shaded" {
 			}
 			
 			fixed4 frag (v2f i) : SV_Target {
-				fixed4 color = tex2D(_MainTex, i.uv);
+                fixed4 color = tex2D(_MainTex, i.uv) * _Color;
 
 				float3 faceNormal  = GetFaceNormal(i.worldPos);
 				float3 finalNormal = lerp(i.normal, faceNormal, _BlendNormal * i.color.r);

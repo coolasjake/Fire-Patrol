@@ -19,10 +19,21 @@ namespace FirePatrol
     }
 
     [Serializable]
+    public class PropInfo
+    {
+        public PropType PropType;
+        public List<GameObject> Prefabs;
+        public float ScaleMin = 1.0f;
+        public float ScaleMax = 1.0f;
+        public float MinDistanceToOtherProps = 0.5f;
+    }
+
+    [Serializable]
     public class TileSettings
     {
         public List<TilePrefabLink> GrassPrefabLinks;
         public TilePrefabVariations[] GrassPrefabVariations;
+        public PropInfo[] PropPrefabs;
     }
 
     // [CreateAssetMenu(fileName = "LevelEditorSettings", menuName = "level editor settings")]

@@ -4,12 +4,29 @@ using System.Collections.Generic;
 
 namespace FirePatrol
 {
+    public enum PropType
+    {
+        Tree,
+        Flower,
+        Mushroom,
+        GrassTuft,
+        Rock,
+    }
+
+    [Serializable]
+    public class PropInstance
+    {
+        public PropType PropType;
+        public GameObject GameObject;
+    }
+
     [Serializable]
     public class TileData
     {
         public int TileType;
         public Vector3 CenterPosition;
         public GameObject Model;
+        public List<PropInstance> Props;
         public int Id;
         public int Row;
         public int Col;
@@ -17,7 +34,7 @@ namespace FirePatrol
 
     public enum PointTypes
     {
-        Sand,
+        Water,
         Grass,
     }
 
@@ -94,6 +111,26 @@ namespace FirePatrol
             var result = TryGetPointData(i, k);
             Assert.That(result != null);
             return result;
+        }
+
+        public List<TileData> GetNeighbourTiles(PointData pointData)
+        {
+            var tiles = new List<TileData>();
+
+            for (int i = pointData.Row - 1; i <= pointData.Row; i++)
+            {
+                for (int k = pointData.Col - 1; k <= pointData.Col; k++)
+                {
+                    var tile = TryGetTileData(i, k);
+
+                    if (tile != null)
+                    {
+                        tiles.Add(tile);
+                    }
+                }
+            }
+
+            return tiles;
         }
     }
 }

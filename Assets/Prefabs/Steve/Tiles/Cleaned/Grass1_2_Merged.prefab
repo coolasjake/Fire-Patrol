@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2894442463206585298}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Grass1_2_Merged
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,8 @@ GameObject:
   - component: {fileID: 7185794077462371490}
   - component: {fileID: 1944981201690430907}
   - component: {fileID: 4471241672437576947}
-  m_Layer: 0
+  - component: {fileID: 8747362975175817057}
+  m_Layer: 8
   m_Name: Merged Meshes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +73,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7586730016946499685}
-  m_Mesh: {fileID: 4300000, guid: 0eb7b0973d216294097701cd4720bb13, type: 2}
+  m_Mesh: {fileID: 4300000, guid: f380ebed8b2fb1740a9cf7aee6c37f8f, type: 2}
 --- !u!23 &4471241672437576947
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -101,9 +102,6 @@ MeshRenderer:
   - {fileID: 2100000, guid: 10d3bb3c04c739649bcfdbcd9a3ff26a, type: 2}
   - {fileID: 2100000, guid: 91ca050cabe34a442bd27b13c8c8ceb4, type: 2}
   - {fileID: 2100000, guid: b586e6cb6f2717d4691931412eba15c8, type: 2}
-  - {fileID: 2100000, guid: 3ad674c2f9cedb642af62e9c7568c12f, type: 2}
-  - {fileID: 2100000, guid: e29ea14d28bfc914c9d59ba21a991057, type: 2}
-  - {fileID: 2100000, guid: 0eab663b891975a47b372c87c8c782ec, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -125,3 +123,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &8747362975175817057
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7586730016946499685}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: f380ebed8b2fb1740a9cf7aee6c37f8f, type: 2}
