@@ -390,6 +390,7 @@ public static class Utility
         return matrix;
     }
 
+    /// <summary> Return a copy of the colour with its saturation multiplied by the value. </summary>
     public static Color MultiplySaturation(this Color oldCol, float saturationMultiplier)
     {
         float h, s, v = 0;
@@ -397,13 +398,39 @@ public static class Utility
         return Color.HSVToRGB(h, s * saturationMultiplier, v);
     }
 
-    public static Color ChangeHue(this Color oldCol, float newHue)
+    /// <summary> Return a copy of the colour with its hue changed to the new value [0-1]. </summary>
+    public static Color WithHue(this Color oldCol, float newHue)
+    {
+        float h, s, v = 0;
+        Color.RGBToHSV(oldCol, out h, out s, out v);
+        return Color.HSVToRGB(newHue, s, v);
+    }
+
+    /// <summary> Return a copy of the colour with its hue changed to the new value [0-360]. </summary>
+    public static Color WithHue360(this Color oldCol, float newHue)
     {
         float h, s, v = 0;
         Color.RGBToHSV(oldCol, out h, out s, out v);
         return Color.HSVToRGB(newHue / 360f, s, v);
     }
 
+    /// <summary> Return a copy of the colour with its vibrance (e.g. black -> colourful) changed to the new value [0-1]. </summary>
+    public static Color WithVibrance(this Color oldCol, float newVibrance)
+    {
+        float h, s, v = 0;
+        Color.RGBToHSV(oldCol, out h, out s, out v);
+        return Color.HSVToRGB(h, s, newVibrance);
+    }
+
+    /// <summary> Return a copy of the colour with its vibrance (e.g. black -> colourful) multiplied by the new value. </summary>
+    public static Color MultiplyVibrance(this Color oldCol, float vibranceMultiplier)
+    {
+        float h, s, v = 0;
+        Color.RGBToHSV(oldCol, out h, out s, out v);
+        return Color.HSVToRGB(h, s, v * vibranceMultiplier);
+    }
+
+    /// <summary> Return a copy of the colour with its alpha changed to the new value [0-1]. </summary>
     public static Color WithAlpha(this Color oldCol, float alpha)
     {
         oldCol.a = alpha;
