@@ -807,6 +807,25 @@ namespace FirePatrol
             Log.Info("[LevelEditorWindowImpl] Successfully generated {0} tiles", levelData.Tiles.Count);
         }
 
+        void GenerateBurnEffectData()
+        {
+            MarkSceneDirty();
+            var levelData = GetLevelData();
+            foreach (TileData tile in levelData.Tiles)
+            {
+                if (tile.burntEffect == null)
+                    tile.burntEffect = new BurntEffect();
+
+                List<MeshRenderer> meshes = new List<MeshRenderer>();
+                foreach (PropInstance prop in tile.Props)
+                {
+                    MeshRenderer[] propMeshes = prop.GameObject.GetComponentsInChildren<MeshRenderer>();
+                    meshes.AddRange(propMeshes);
+                }
+                tile.burntEffect.SetUpBurnables(meshes.ToArray());
+            }
+        }
+
         GUIStyle GetSelectedButtonStyle()
         {
             if (_selectedButtonStyle == null)
@@ -1032,6 +1051,11 @@ namespace FirePatrol
                 if (GUILayout.Button("Regenerate"))
                 {
                     RegenerateTiles();
+                }
+
+                if (GUILayout.Button("Generate Burn Effect Data"))
+                {
+                    GenerateBurnEffectData();
                 }
             }
         }
