@@ -15,7 +15,8 @@ namespace FirePatrol
             Grass,
             Water,
 
-            Trees,
+            Trees1,
+            Trees2,
             Flowers,
             Mushrooms,
             GrassTufts,
@@ -306,7 +307,7 @@ namespace FirePatrol
 
             if (_highlightedPropPosition != null)
             {
-                var radius = _currentBrush == BrushTypes.Trees ? _treeBrushSize : _nonTreeBrushSize;
+                var radius = _currentBrush == BrushTypes.Trees1 || _currentBrush == BrushTypes.Trees2 ? _treeBrushSize : _nonTreeBrushSize;
                 Handles.DrawWireArc(_highlightedPropPosition.Value, Vector3.up, Vector3.forward, 360, radius);
             }
 
@@ -401,48 +402,52 @@ namespace FirePatrol
             });
         }
 
-        void TryAddProp(Vector3 pos, BrushTypes brushType)
+        void TryAddProp(Vector3 pos, BrushTypes brushType, LevelData levelData)
         {
-            var tile = TryGetClosestTile(pos);
-
-            if (tile == null)
-            {
-                return;
-            }
-
-            if (tile.Props == null)
-            {
-                tile.Props = new List<PropInstance>();
-            }
-
             MarkSceneDirty();
 
             if (brushType == BrushTypes.PropEraser)
             {
                 var radius = _nonTreeBrushSize;
-                var propsToDelete = new List<PropInstance>();
 
-                foreach (var existingProp in tile.Props)
+                foreach (var tile in levelData.Tiles)
                 {
-                    if (existingProp.GameObject != null && (existingProp.GameObject.transform.position - pos).magnitude < radius)
+                    var propsToDelete = new List<PropInstance>();
+
+                    foreach (var existingProp in tile.Props)
                     {
-                        propsToDelete.Add(existingProp);
+                        if (existingProp.GameObject != null && (existingProp.GameObject.transform.position - pos).magnitude < radius)
+                        {
+                            propsToDelete.Add(existingProp);
+                        }
                     }
-                }
 
-                foreach (var prop in propsToDelete)
-                {
-                    tile.Props.Remove(prop);
-                    GameObject.DestroyImmediate(prop.GameObject);
+                    foreach (var prop in propsToDelete)
+                    {
+                        tile.Props.Remove(prop);
+                        GameObject.DestroyImmediate(prop.GameObject);
+                    }
                 }
             }
             else
             {
+                var tile = TryGetClosestTile(pos);
+
+                if (tile == null)
+                {
+                    return;
+                }
+
+                if (tile.Props == null)
+                {
+                    tile.Props = new List<PropInstance>();
+                }
+
                 var propType = BrushTypeToPropType(brushType);
                 var propInfo = _settings.TileSettings.PropPrefabs.Where(x => x.PropType == propType).Single();
 
                 var prefab = propInfo.Prefabs[UnityEngine.Random.Range(0, propInfo.Prefabs.Count)];
-                var radius = _currentBrush == BrushTypes.Trees ? _treeBrushSize : _nonTreeBrushSize;
+                var radius = _currentBrush == BrushTypes.Trees1 || _currentBrush == BrushTypes.Trees2 ? _treeBrushSize : _nonTreeBrushSize;
                 var numAttempts = Mathf.Max(1, (int)Mathf.Floor(0.01f * (_treeBrushSize * _treeBrushSize)));
 
                 for (int i = 0; i < numAttempts; i++)
@@ -490,7 +495,7 @@ namespace FirePatrol
 
                 if (gridPoint != null && IsDirectlyOnFlatGrass(gridPoint.Value))
                 {
-                    TryAddProp(gridPoint.Value, currentBrush);
+                    TryAddProp(gridPoint.Value, currentBrush, levelData);
                 }
             }
         }
@@ -499,8 +504,11 @@ namespace FirePatrol
         {
             switch (brush)
             {
-                case BrushTypes.Trees:
-                    return PropType.Tree;
+                case BrushTypes.Trees1:
+                    return PropType.Tree1;
+
+                case BrushTypes.Trees2:
+                    return PropType.Tree2;
 
                 case BrushTypes.Flowers:
                     return PropType.Flower;
@@ -858,9 +866,17 @@ namespace FirePatrol
             {
                 using (GuiHelper.HorizontalBlock())
                 {
-                    if (GUILayout.Button("Tree", _currentBrush == BrushTypes.Trees ? GetSelectedButtonStyle() : regularButtonStyle))
+                    if (GUILayout.Button("Tree 1", _currentBrush == BrushTypes.Trees1 ? GetSelectedButtonStyle() : regularButtonStyle))
                     {
-                        _currentBrush = BrushTypes.Trees;
+                        _currentBrush = BrushTypes.Trees1;
+                        _highlightedPoint = null;
+                        _highlightedPropPosition = null;
+                        SceneView.RepaintAll();
+                    }
+
+                    if (GUILayout.Button("Tree 2", _currentBrush == BrushTypes.Trees2 ? GetSelectedButtonStyle() : regularButtonStyle))
+                    {
+                        _currentBrush = BrushTypes.Trees2;
                         _highlightedPoint = null;
                         _highlightedPropPosition = null;
                         SceneView.RepaintAll();

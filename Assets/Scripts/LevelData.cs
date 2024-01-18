@@ -6,7 +6,8 @@ namespace FirePatrol
 {
     public enum PropType
     {
-        Tree,
+        Tree1,
+        Tree2,
         Flower,
         Mushroom,
         GrassTuft,
