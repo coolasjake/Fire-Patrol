@@ -4,14 +4,16 @@ using UnityEngine;
 
 public class WaterBucket : MonoBehaviour
 {
+    public LayerMask waterLayer;
     public float raisedLength = 3.5f;
     public float loweredLength = 8f;
-    public float testWaterLength = 7f;
     public float launchToLowerDelay = 0.5f;
     public float winchSpeed = 1f;
     public bool startWithWater = true;
+    public float splashRadius = 20f;
 
     private bool _hasWater = false;
+    private bool _inWater = false;
     private float _lastWaterLaunch = 0f;
 
     public Rigidbody RB;
@@ -45,6 +47,7 @@ public class WaterBucket : MonoBehaviour
         _lastWaterLaunch = Time.time;
         WaterSplash water = Instantiate(waterBlob, transform.position, Quaternion.identity);
         water.RB.velocity = RB.velocity;
+        water.splashRadius = splashRadius;
     }
 
     private void LowerBucket()
@@ -55,10 +58,24 @@ public class WaterBucket : MonoBehaviour
     private void RaiseBucket()
     {
         cord.cordLength = Mathf.Clamp(cord.cordLength - winchSpeed * Time.deltaTime, raisedLength, loweredLength);
-        bool isInWater = cord.cordLength >= testWaterLength;
-        if (isInWater)
+        if (_inWater)
         {
             _hasWater = true;
+            _inWater = false;
         }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (((1 << other.gameObject.layer) & waterLayer) != 0)
+        {
+            _inWater = true;
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, splashRadius);
     }
 }

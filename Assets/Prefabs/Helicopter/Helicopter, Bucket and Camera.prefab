@@ -182,7 +182,7 @@ GameObject:
   - component: {fileID: 6651735117526853194}
   - component: {fileID: 2621471317237675287}
   - component: {fileID: 7026250119941262662}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bucket
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -317,7 +317,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   connectedBody: {fileID: 5664431101722632179}
   autoConfigureLength: 1
-  cordLength: 3.0060682
+  cordLength: 9.018205
   elasticStrength: 1
   maxStretch: 0.2
 --- !u!114 &2621471317237675287
@@ -348,14 +348,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 335578242f7e182479672bb2c609b165, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  waterLayer:
+    serializedVersion: 2
+    m_Bits: 512
   raisedLength: 2.5
   loweredLength: 8
-  testWaterLength: 7
   launchToLowerDelay: 0.5
   winchSpeed: 4
+  startWithWater: 1
   RB: {fileID: 1390607467190418720}
   cord: {fileID: 6651735117526853194}
-  waterBlob: {fileID: 5957143252900846886, guid: 11591e437ac98f3439a8a6c20fbfe451,
+  waterBlob: {fileID: 2230359081687902459, guid: 11591e437ac98f3439a8a6c20fbfe451,
     type: 3}
 --- !u!1 &2401963718755340126
 GameObject:
@@ -418,8 +421,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6524293261709616545}
   - {fileID: 544021806310575008}
@@ -558,8 +561,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxSpeed: 15
   accelleration: 7
+  deccellerationBonus: 0.5
   tiltAmount: 1
   tiltSpeed: 1
+  decellerateOnNoInput: 1
   turnSpeed: 40
   turnHandling: 1
   alignmentBonus: 1
@@ -687,7 +692,7 @@ GameObject:
   - component: {fileID: 2903178574585416347}
   - component: {fileID: 943204709957162639}
   - component: {fileID: 5658684429255102552}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cord
   m_TagString: Untagged
   m_Icon: {fileID: 0}

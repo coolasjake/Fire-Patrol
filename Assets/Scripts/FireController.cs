@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class FireController : MonoBehaviour
 {
+    public static FireController singleton;
+
     public LevelData leveldata;
     public ParticleSystem fireParticlePrefab;
     public float fireSpawnHeight = 2f;
@@ -13,9 +15,15 @@ public class FireController : MonoBehaviour
     [EnumNamedArray(typeof(FireStage))]
     public float[] fireStageDurations = new float[System.Enum.GetValues(typeof(FireStage)).Length];
 
+    void Awake()
+    {
+        singleton = this;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        print(Physics.gravity);
         BurntEffect.dropSpeed = dropAnimationSpeed;
         SetupFireParticles();
         AddFireToRandomPoint();
@@ -66,9 +74,56 @@ public class FireController : MonoBehaviour
             if (tile.burntEffect.CanStartDropAnimation())
             {
                 tile.burntEffect.DropCoroutine = StartCoroutine(BurntEffect.BurnablesDropAnimation(tile.burntEffect));
-                print("Dropping!");
             }
         }
+    }
+
+    public void SplashClosestTwoPoints(Vector3 position, float radius)
+    {
+        float closestDistSqr = float.PositiveInfinity;
+        PointData closestPoint = null;
+        PointData secondClosestPoint = null;
+        foreach (PointData point in leveldata.Points)
+        {
+            float distSqr = (position - point.Position).sqrMagnitude;
+            if (distSqr < closestDistSqr)
+            {
+                closestDistSqr = distSqr;
+                secondClosestPoint = closestPoint;
+                closestPoint = point;
+            }
+        }
+
+        if (closestPoint != null && closestPoint.Type != PointTypes.Water)
+            WetPoint(closestPoint);
+        if (secondClosestPoint != null && secondClosestPoint.Type != PointTypes.Water)
+            WetPoint(secondClosestPoint);
+    }
+
+    public void SplashPointsInRadius(Vector3 position, float radius)
+    {
+        List<PointData> splashedPoints = new List<PointData>();
+        foreach (PointData point in leveldata.Points)
+        {
+            if (point.Type != PointTypes.Water)
+            {
+                if (Utility.WithinRange(point.Position.FixedY(position.y), position, radius + leveldata.TileSize * 0.5f))
+                    splashedPoints.Add(point);
+            }
+        }
+
+        foreach (PointData point in splashedPoints)
+        {
+            WetPoint(point);
+        }
+    }
+
+    private void WetPoint(PointData point)
+    {
+        //Debug.Log("Wetting point: " + point.Row + ", " + point.Col + " (type = " + point.Type + ")", point.fireParticle);
+        point.wet = true;
+        point.onFire = false;
+        point.fireParticle.Stop(false, ParticleSystemStopBehavior.StopEmitting);
     }
 
     private void ProgressFireStage(PointData point)
@@ -139,7 +194,6 @@ public class FireController : MonoBehaviour
 
     private void SetPointOnFire(PointData point)
     {
-        print("Set point" + point.Row + ", " + point.Col + " (type = " + point.Type + "), on fire.");
         point.onFire = true;
         //point.fireParticle.Play();
     }

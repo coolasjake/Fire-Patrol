@@ -494,7 +494,6 @@ public class BurntEffect
 
     public bool CanStartDropAnimation()
     {
-        Debug.Log("Drop animation: " + (burntLevel >= burnAwayThreshold) + (_dropAnimation == null) + (_fullyBurnt == false));
         return (burntLevel >= burnAwayThreshold)
             && (_dropAnimation == null && _fullyBurnt == false);
     }

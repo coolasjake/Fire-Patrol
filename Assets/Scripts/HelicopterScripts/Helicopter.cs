@@ -91,12 +91,6 @@ public class Helicopter : MonoBehaviour
         return input;
     }
 
-    private void ApplyPropellorForce()
-    {
-        float decellBonus = 1f + Mathf.Max(0, -Vector3.Dot(_tiltDir.normalized, RB.velocity.normalized)) * deccellerationBonus;
-        RB.velocity += _tiltDir * decellBonus * accelleration * Time.deltaTime;
-    }
-
     private void RotateHelicopter(Vector2 input)
     {
         input = Vector2.ClampMagnitude(input, 1f);
@@ -110,8 +104,16 @@ public class Helicopter : MonoBehaviour
         input += alignmentBonus * Vector2.Dot(input, _forwardsDir) * input.normalized;
         Vector3 inputDir = input.ToVector3();
         inputDir.y = 1f / tiltAmount;
+        //float tiltSpeedBonus = Vector3.Dot(_tiltDir, inputDir);
+        //print("tilt: " + _tiltDir.sqrMagnitude + " tiltSpeed: " + tiltSpeedBonus);
         _tiltDir = Vector3.MoveTowards(_tiltDir, inputDir, tiltSpeed * Time.deltaTime);
         tiltObject.rotation = Quaternion.LookRotation(_tiltDir, _forwardsDir.ToVector3());
+    }
+
+    private void ApplyPropellorForce()
+    {
+        float decellBonus = 1f + Mathf.Max(0, -Vector3.Dot(_tiltDir.normalized, RB.velocity.normalized)) * deccellerationBonus;
+        RB.velocity += _tiltDir * decellBonus * accelleration * Time.deltaTime;
     }
 
 
