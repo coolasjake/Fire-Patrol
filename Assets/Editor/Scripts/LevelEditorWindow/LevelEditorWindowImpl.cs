@@ -414,6 +414,11 @@ namespace FirePatrol
                 {
                     var propsToDelete = new List<PropInstance>();
 
+                    if (tile.Props == null)
+                    {
+                        tile.Props = new List<PropInstance>();
+                    }
+
                     foreach (var existingProp in tile.Props)
                     {
                         if (existingProp.GameObject != null && (existingProp.GameObject.transform.position - pos).magnitude < radius)
