@@ -27,10 +27,10 @@ namespace FirePatrol
         static readonly Color SELECTED_COLOR = Color.green;
         const int TILE_TYPE_ALL_GRASS = 15;
         const int TILE_TYPE_ALL_WATER = 0;
+
         const float MIN_TILE_SCALE = 0.1f;
         const float LOW_GRASS_HEIGHT = 1.25f;
         const float HIGH_GRASS_HEIGHT = 2.25f;
-        const float NON_TREE_BRUSH_SIZE = 1.0f;
 
         BrushTypes? _currentBrush = null;
         PointTypes _defaultPointType = PointTypes.Grass;
@@ -468,7 +468,7 @@ namespace FirePatrol
 
                     var adjustedPos = ProjectOntoTerrain(absPos);
 
-                    if (adjustedPos.HasValue && IsDirectlyOnFlatGrass(adjustedPos.Value))
+                    if (adjustedPos.HasValue && IsDirectlyOnFlatGrass(adjustedPos.Value, levelData))
                     {
                         TryAddPropAt(tile, prefab, adjustedPos.Value, propInfo);
                     }
@@ -498,7 +498,7 @@ namespace FirePatrol
             {
                 var gridPoint = TryGetTerrainIntersectionPoint(screenPos);
 
-                if (gridPoint != null && IsDirectlyOnFlatGrass(gridPoint.Value))
+                if (gridPoint != null && IsDirectlyOnFlatGrass(gridPoint.Value, levelData))
                 {
                     TryAddProp(gridPoint.Value, currentBrush, levelData);
                 }
@@ -532,14 +532,14 @@ namespace FirePatrol
             }
         }
 
-        bool IsDirectlyOnFlatGrass(Vector3 pos)
+        bool IsDirectlyOnFlatGrass(Vector3 pos, LevelData levelData)
         {
-            if (Mathf.Abs(pos.y - LOW_GRASS_HEIGHT) < 0.01f)
+            if (Mathf.Abs(pos.y - LOW_GRASS_HEIGHT * levelData.TileScale) < 0.01f)
             {
                 return true;
             }
 
-            return Mathf.Abs(pos.y - HIGH_GRASS_HEIGHT) < 0.01f;
+            return Mathf.Abs(pos.y - HIGH_GRASS_HEIGHT * levelData.TileScale) < 0.01f;
         }
 
         void HighlightControlsAt(Vector2 screenPos, LevelData levelData)
@@ -565,7 +565,7 @@ namespace FirePatrol
             {
                 var propPos = TryGetTerrainIntersectionPoint(screenPos);
 
-                if (propPos.HasValue && !IsDirectlyOnFlatGrass(propPos.Value))
+                if (propPos.HasValue && !IsDirectlyOnFlatGrass(propPos.Value, levelData))
                 {
                     propPos = null;
                 }
