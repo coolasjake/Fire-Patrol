@@ -1,200 +1,202 @@
-using FirePatrol;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FireController : MonoBehaviour
+namespace FirePatrol
 {
-    public static FireController singleton;
-
-    public LevelData leveldata;
-    public ParticleSystem fireParticlePrefab;
-    public float fireSpawnHeight = 2f;
-    public float dropAnimationSpeed = 30f;
-
-    [EnumNamedArray(typeof(FireStage))]
-    public float[] fireStageDurations = new float[System.Enum.GetValues(typeof(FireStage)).Length];
-
-    void Awake()
+    public class FireController : MonoBehaviour
     {
-        singleton = this;
-    }
+        public static FireController singleton;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        print(Physics.gravity);
-        BurntEffect.dropSpeed = dropAnimationSpeed;
-        SetupFireParticles();
-        AddFireToRandomPoint();
-    }
+        public LevelData leveldata;
+        public ParticleSystem fireParticlePrefab;
+        public float fireSpawnHeight = 2f;
+        public float dropAnimationSpeed = 30f;
 
-    // Update is called once per frame
-    void Update()
-    {
-        UpdateFires();
-    }
+        [EnumNamedArray(typeof(FireStage))]
+        public float[] fireStageDurations = new float[System.Enum.GetValues(typeof(FireStage)).Length];
 
-    private void UpdateFires()
-    {
-        foreach (PointData point in leveldata.Points)
+        void Awake()
         {
-            if (point.onFire)
-            {
-                point.fireprogress += Time.deltaTime;
-                if (point.fireprogress >= fireStageDurations[(int)point.fireStage])
-                    ProgressFireStage(point);
-                SetBurntLevel(point);
-            }
-        }
-    }
-
-    private void SetBurntLevel(PointData point)
-    {
-        float burntLevel = 0;
-        switch (point.fireStage)
-        {
-            case FireStage.none:
-                break;
-            case FireStage.sparks:
-                burntLevel = (point.fireprogress / fireStageDurations[(int)FireStage.sparks]) * 0.25f;
-                break;
-            case FireStage.inferno:
-                burntLevel = 0.25f + (point.fireprogress / fireStageDurations[(int)FireStage.sparks]) * 0.5f;
-                break;
-            case FireStage.dying:
-                burntLevel = 0.75f + (point.fireprogress / fireStageDurations[(int)FireStage.sparks]) * 0.25f;
-                break;
+            singleton = this;
         }
 
-        List<TileData> tiles = leveldata.GetNeighbourTiles(point);
-        foreach (TileData tile in tiles)
+        // Start is called before the first frame update
+        void Start()
         {
-            tile.burntEffect.SetBurntness(burntLevel);
-            if (tile.burntEffect.CanStartDropAnimation())
-            {
-                tile.burntEffect.DropCoroutine = StartCoroutine(BurntEffect.BurnablesDropAnimation(tile.burntEffect));
-            }
+            print(Physics.gravity);
+            BurntEffect.dropSpeed = dropAnimationSpeed;
+            SetupFireParticles();
+            AddFireToRandomPoint();
         }
-    }
 
-    public void SplashClosestTwoPoints(Vector3 position, float radius)
-    {
-        float closestDistSqr = float.PositiveInfinity;
-        PointData closestPoint = null;
-        PointData secondClosestPoint = null;
-        foreach (PointData point in leveldata.Points)
+        // Update is called once per frame
+        void Update()
         {
-            float distSqr = (position - point.Position).sqrMagnitude;
-            if (distSqr < closestDistSqr)
+            UpdateFires();
+        }
+
+        private void UpdateFires()
+        {
+            foreach (PointData point in leveldata.Points)
             {
-                closestDistSqr = distSqr;
-                secondClosestPoint = closestPoint;
-                closestPoint = point;
+                if (point.onFire)
+                {
+                    point.fireprogress += Time.deltaTime;
+                    if (point.fireprogress >= fireStageDurations[(int)point.fireStage])
+                        ProgressFireStage(point);
+                    SetBurntLevel(point);
+                }
             }
         }
 
-        if (closestPoint != null && closestPoint.Type != PointTypes.Water)
-            WetPoint(closestPoint);
-        if (secondClosestPoint != null && secondClosestPoint.Type != PointTypes.Water)
-            WetPoint(secondClosestPoint);
-    }
-
-    public void SplashPointsInRadius(Vector3 position, float radius)
-    {
-        List<PointData> splashedPoints = new List<PointData>();
-        foreach (PointData point in leveldata.Points)
+        private void SetBurntLevel(PointData point)
         {
-            if (point.Type != PointTypes.Water)
+            float burntLevel = 0;
+            switch (point.fireStage)
             {
-                if (Utility.WithinRange(point.Position.FixedY(position.y), position, radius + leveldata.TileSize * 0.5f))
-                    splashedPoints.Add(point);
+                case FireStage.none:
+                    break;
+                case FireStage.sparks:
+                    burntLevel = (point.fireprogress / fireStageDurations[(int)FireStage.sparks]) * 0.25f;
+                    break;
+                case FireStage.inferno:
+                    burntLevel = 0.25f + (point.fireprogress / fireStageDurations[(int)FireStage.sparks]) * 0.5f;
+                    break;
+                case FireStage.dying:
+                    burntLevel = 0.75f + (point.fireprogress / fireStageDurations[(int)FireStage.sparks]) * 0.25f;
+                    break;
+            }
+
+            List<TileData> tiles = leveldata.GetNeighbourTiles(point);
+            foreach (TileData tile in tiles)
+            {
+                tile.burntEffect.SetBurntness(burntLevel);
+                if (tile.burntEffect.CanStartDropAnimation())
+                {
+                    tile.burntEffect.DropCoroutine = StartCoroutine(BurntEffect.BurnablesDropAnimation(tile.burntEffect));
+                }
             }
         }
 
-        foreach (PointData point in splashedPoints)
+        public void SplashClosestTwoPoints(Vector3 position, float radius)
         {
-            WetPoint(point);
+            float closestDistSqr = float.PositiveInfinity;
+            PointData closestPoint = null;
+            PointData secondClosestPoint = null;
+            foreach (PointData point in leveldata.Points)
+            {
+                float distSqr = (position - point.Position).sqrMagnitude;
+                if (distSqr < closestDistSqr)
+                {
+                    closestDistSqr = distSqr;
+                    secondClosestPoint = closestPoint;
+                    closestPoint = point;
+                }
+            }
+
+            if (closestPoint != null && closestPoint.Type != PointTypes.Water)
+                WetPoint(closestPoint);
+            if (secondClosestPoint != null && secondClosestPoint.Type != PointTypes.Water)
+                WetPoint(secondClosestPoint);
         }
-    }
 
-    private void WetPoint(PointData point)
-    {
-        //Debug.Log("Wetting point: " + point.Row + ", " + point.Col + " (type = " + point.Type + ")", point.fireParticle);
-        point.wet = true;
-        point.onFire = false;
-        point.fireParticle.Stop(false, ParticleSystemStopBehavior.StopEmitting);
-    }
-
-    private void ProgressFireStage(PointData point)
-    {
-        //Go to next stage and trigger behaviours
-        switch (point.fireStage)
+        public void SplashPointsInRadius(Vector3 position, float radius)
         {
-            case FireStage.none:
-                point.fireStage = FireStage.sparks;
-                point.fireParticle.Play();
-                break;
-            case FireStage.sparks:
-                point.fireStage = FireStage.inferno;
-                SpreadFireWithChance(point, 0.7f);
-                break;
-            case FireStage.inferno:
-                point.fireStage = FireStage.dying;
-                SpreadFireWithChance(point, 0.3f);
-                break;
-            case FireStage.dying:
-                point.fireStage = FireStage.ashes;
-                point.fireParticle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-                point.onFire = false;
-                break;
-        }
-    }
+            List<PointData> splashedPoints = new List<PointData>();
+            foreach (PointData point in leveldata.Points)
+            {
+                if (point.Type != PointTypes.Water)
+                {
+                    if (Utility.WithinRange(point.Position.FixedY(position.y), position, radius + leveldata.TileSize * 0.5f))
+                        splashedPoints.Add(point);
+                }
+            }
 
-    private void SpreadFireWithChance(PointData point, float chance)
-    {
-        List<PointData> neighbors = leveldata.GetDirectNeighbourPoints(point);
-        foreach (PointData neighbor in neighbors)
+            foreach (PointData point in splashedPoints)
+            {
+                WetPoint(point);
+            }
+        }
+
+        private void WetPoint(PointData point)
         {
-            if (neighbor.Type == PointTypes.Water || neighbor.onFire || neighbor.wet || neighbor.fireStage == FireStage.ashes)
-                continue;
-            if (Random.value <= chance)
-                SetPointOnFire(neighbor);
+            //Debug.Log("Wetting point: " + point.Row + ", " + point.Col + " (type = " + point.Type + ")", point.fireParticle);
+            point.wet = true;
+            point.onFire = false;
+            point.fireParticle.Stop(false, ParticleSystemStopBehavior.StopEmitting);
         }
-    }    
 
-    private void SetupFireParticles()
-    {
-        foreach (PointData point in leveldata.Points)
+        private void ProgressFireStage(PointData point)
         {
-            if (point.Type == PointTypes.Water)
-                point.fireParticle = null;
-            else
-                point.fireParticle = Instantiate(fireParticlePrefab, point.Position + new Vector3(0, fireSpawnHeight, 0), Quaternion.identity, transform);
+            //Go to next stage and trigger behaviours
+            switch (point.fireStage)
+            {
+                case FireStage.none:
+                    point.fireStage = FireStage.sparks;
+                    point.fireParticle.Play();
+                    break;
+                case FireStage.sparks:
+                    point.fireStage = FireStage.inferno;
+                    SpreadFireWithChance(point, 0.7f);
+                    break;
+                case FireStage.inferno:
+                    point.fireStage = FireStage.dying;
+                    SpreadFireWithChance(point, 0.3f);
+                    break;
+                case FireStage.dying:
+                    point.fireStage = FireStage.ashes;
+                    point.fireParticle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+                    point.onFire = false;
+                    break;
+            }
         }
-    }
 
-    private void AddFireToRandomPoint()
-    {
-        List<int> landPoints = new List<int>();
-        for(int i = 0; i < leveldata.Points.Count; ++i)
+        private void SpreadFireWithChance(PointData point, float chance)
         {
-            if (leveldata.Points[i].Type == PointTypes.Grass)
-                landPoints.Add(i);
+            List<PointData> neighbors = leveldata.GetDirectNeighbourPoints(point);
+            foreach (PointData neighbor in neighbors)
+            {
+                if (neighbor.Type == PointTypes.Water || neighbor.onFire || neighbor.wet || neighbor.fireStage == FireStage.ashes)
+                    continue;
+                if (Random.value <= chance)
+                    SetPointOnFire(neighbor);
+            }
+        }    
+
+        private void SetupFireParticles()
+        {
+            foreach (PointData point in leveldata.Points)
+            {
+                if (point.Type == PointTypes.Water)
+                    point.fireParticle = null;
+                else
+                    point.fireParticle = Instantiate(fireParticlePrefab, point.Position + new Vector3(0, fireSpawnHeight, 0), Quaternion.identity, transform);
+            }
         }
-        int index = landPoints[Random.Range(0, landPoints.Count)];
-        SetPointOnFire(index);
 
-    }
+        private void AddFireToRandomPoint()
+        {
+            List<int> landPoints = new List<int>();
+            for(int i = 0; i < leveldata.Points.Count; ++i)
+            {
+                if (leveldata.Points[i].Type == PointTypes.Grass)
+                    landPoints.Add(i);
+            }
+            int index = landPoints[Random.Range(0, landPoints.Count)];
+            SetPointOnFire(index);
 
-    private void SetPointOnFire(int index)
-    {
-        SetPointOnFire(leveldata.Points[index]);
-    }
+        }
 
-    private void SetPointOnFire(PointData point)
-    {
-        point.onFire = true;
-        //point.fireParticle.Play();
+        private void SetPointOnFire(int index)
+        {
+            SetPointOnFire(leveldata.Points[index]);
+        }
+
+        private void SetPointOnFire(PointData point)
+        {
+            point.onFire = true;
+            //point.fireParticle.Play();
+        }
     }
 }
