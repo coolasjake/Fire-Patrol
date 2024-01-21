@@ -2,33 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class WaterSplash : MonoBehaviour
+namespace FirePatrol
 {
-    public Rigidbody RB;
-    public ParticleSystem waterTrail;
-    public ParticleSystem waterSplash;
-    public float splashRadius = 5f;
-
-    private void OnCollisionEnter(Collision collision)
+    [RequireComponent(typeof(Rigidbody))]
+    public class WaterSplash : MonoBehaviour
     {
-        RB.isKinematic = true;
-        waterTrail.Stop(false, ParticleSystemStopBehavior.StopEmitting);
-        waterSplash.Play();
-        StartCoroutine(DestroyAfterTime(3f));
-        FireController.singleton.SplashPointsInRadius(transform.position, splashRadius);
-    }
+        public Rigidbody RB;
+        public ParticleSystem waterTrail;
+        public ParticleSystem waterSplash;
+        public float splashRadius = 5f;
 
-    private IEnumerator DestroyAfterTime(float time)
-    {
-        yield return new WaitForSeconds(time);
-        gameObject.SetActive(false);
-        Destroy(gameObject);
-    }
+        private void OnCollisionEnter(Collision collision)
+        {
+            RB.isKinematic = true;
+            waterTrail.Stop(false, ParticleSystemStopBehavior.StopEmitting);
+            waterSplash.Play();
+            StartCoroutine(DestroyAfterTime(3f));
+            FireController.singleton.SplashPointsInRadius(transform.position, splashRadius);
+        }
 
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, splashRadius);
+        private IEnumerator DestroyAfterTime(float time)
+        {
+            yield return new WaitForSeconds(time);
+            gameObject.SetActive(false);
+            Destroy(gameObject);
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(transform.position, splashRadius);
+        }
     }
 }
