@@ -38,12 +38,15 @@ namespace FirePatrol
     {
         Water,
         Grass,
+        Forest,
+        Rocky,
     }
 
     public enum FireStage
     {
         none,
         sparks,
+        smallFlames,
         inferno,
         dying,
         ashes,
@@ -54,7 +57,7 @@ namespace FirePatrol
     {
         public PointTypes Type;
         public Vector3 Position;
-        public ParticleSystem fireParticle;
+        public FireParticlesManager fireParticles;
         public bool onFire = false;
         public bool wet = false;
         public FireStage fireStage = FireStage.none;

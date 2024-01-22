@@ -352,10 +352,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   raisedLength: 2.5
-  loweredLength: 8
+  loweredLength: 25
   launchToLowerDelay: 0.5
-  winchSpeed: 4
+  winchSpeed: 15
   startWithWater: 1
+  splashRadius: 20
   RB: {fileID: 1390607467190418720}
   cord: {fileID: 6651735117526853194}
   waterBlob: {fileID: 2230359081687902459, guid: 11591e437ac98f3439a8a6c20fbfe451,
@@ -559,15 +560,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e5c05bdfb212fb4687977f0eec2399a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 15
-  accelleration: 7
+  maxSpeed: 30
+  accelleration: 15
+  dragReadonly: 10
   deccellerationBonus: 0.5
   tiltAmount: 1
-  tiltSpeed: 1
+  tiltSpeed: 1.5
   decellerateOnNoInput: 1
   turnSpeed: 40
-  turnHandling: 1
-  alignmentBonus: 1
+  turnHandling: 2
+  alignmentBonus: 0.3
   propellorSpeed: 1000
   tiltObject: {fileID: 6788629892266448768}
   propellor: {fileID: 361797609104135568}

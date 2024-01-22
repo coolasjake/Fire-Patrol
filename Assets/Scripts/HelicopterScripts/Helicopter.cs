@@ -8,13 +8,17 @@ namespace FirePatrol
     {
         #region Settings
         [Header("Movement Settings")]
-        [Tooltip("Max speed of the helicopter for calculating drag forces.")]
+        [Tooltip("Max speed of the helicopter based on drag forces.")]
         [Min(0.001f)]
         public float maxSpeed = 10f;
 
         [Tooltip("How quickly the helicopter accelerates when it is fully tilted.")]
         [Min(0.001f)]
         public float accelleration = 5f;
+
+        [Tooltip("Amount of drag on the helicopter - controls max speed.")]
+        [Min(0.001f)]
+        public float dragReadonly = 10f;
 
         [Tooltip("Bonus to accelleration when trying to slow down.")]
         [Range(0f, 1f)]
@@ -56,7 +60,6 @@ namespace FirePatrol
         private Vector3 _tiltDir = Vector3.zero;
         private Vector2 _forwardsDir = Vector2.up;
         private float _angularVel = 0f;
-        private float _drag = 10f;
         #endregion
 
         #region Unity Events
@@ -64,7 +67,8 @@ namespace FirePatrol
         void Start()
         {
             RB = GetComponent<Rigidbody>();
-            _drag = MaxSpeedToDrag(maxSpeed, accelleration);
+            dragReadonly = MaxSpeedToDrag;
+            //maxSpeedReadonly = DragToMaxSpeed;
         }
 
         // Update is called once per frame
@@ -74,7 +78,8 @@ namespace FirePatrol
             SpinPropellor();
 
             //Input:
-            _drag = MaxSpeedToDrag(maxSpeed, accelleration); //Only in update so that max speed can be changed during runtime in inspector
+            dragReadonly = MaxSpeedToDrag; //Only in update so that max speed can be changed during runtime in inspector
+            //maxSpeedReadonly = DragToMaxSpeed;
             Vector2 input = GetInput();
             RotateHelicopter(input);
             ApplyPropellorForce();
@@ -119,17 +124,16 @@ namespace FirePatrol
         }
 
 
-        private static float MaxSpeedToDrag(float maxSpeed, float accelleration)
-        {
-            return (2f * accelleration) / Mathf.Pow(maxSpeed, 2);
-        }
+        private float MaxSpeedToDrag => (2f * RB.mass * accelleration) / Mathf.Pow(maxSpeed, 2);
+
+        private float DragToMaxSpeed => Mathf.Sqrt((2f * RB.mass * accelleration) / dragReadonly);
 
         private const float airDensity = 0.01f;
         private void ApplyDragForces()
         {
             //Calculate then apply drag
             float currentVel = RB.velocity.magnitude;
-            float dragValue = (Mathf.Pow(currentVel, 2) * _drag * airDensity) / RB.mass;
+            float dragValue = (Mathf.Pow(currentVel, 2) * dragReadonly * airDensity) / RB.mass;
             dragValue = Mathf.Min(dragValue, currentVel);
             Vector3 dragForce = -RB.velocity.normalized * dragValue;
             RB.velocity += dragForce;

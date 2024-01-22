@@ -14,6 +14,8 @@ namespace FirePatrol
         {
             Grass,
             Water,
+            Forest,
+            Rocky,
 
             Trees1,
             Trees2,
@@ -295,14 +297,15 @@ namespace FirePatrol
 
             Handles.color = Color.yellow;
 
+            if (_highlightedPoint != null)
+            {
+                Handles.color = GetColourForPointType(_highlightedPoint.Type);
+                Handles.DrawWireArc(_highlightedPoint.Position, Vector3.up, Vector3.forward, 360, levelData.TileSize * 0.25f);
+            }
+
             if (_highlightedTile != null)
             {
                 Handles.DrawWireCube(_highlightedTile.CenterPosition, new Vector3(levelData.TileSize, 0, levelData.TileSize));
-            }
-
-            if (_highlightedPoint != null)
-            {
-                Handles.DrawWireArc(_highlightedPoint.Position, Vector3.up, Vector3.forward, 360, levelData.TileSize * 0.25f);
             }
 
             if (_highlightedPropPosition != null)
@@ -315,6 +318,22 @@ namespace FirePatrol
             Handles.DrawWireCube(Vector3.zero, new Vector3(totalSize, 0, totalSize));
         }
 
+        Color GetColourForPointType(PointTypes pointType)
+        {
+            switch (pointType)
+            {
+                case PointTypes.Water:
+                    return Color.blue;
+                case PointTypes.Grass:
+                    return Color.yellow;
+                case PointTypes.Forest:
+                    return Color.green;
+                case PointTypes.Rocky:
+                    return Color.grey;
+            }
+            return Color.red;
+        }
+
         PointTypes GetPointTypeForBrush(BrushTypes brush)
         {
             switch (brush)
@@ -324,6 +343,12 @@ namespace FirePatrol
 
                 case BrushTypes.Water:
                     return PointTypes.Water;
+
+                case BrushTypes.Forest:
+                    return PointTypes.Forest;
+
+                case BrushTypes.Rocky:
+                    return PointTypes.Rocky;
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(brush), brush, null);
@@ -353,6 +378,12 @@ namespace FirePatrol
             Log.Info("[LevelEditorWindowImpl] Applying brush {0} to point {1}", brush, pointData.Id);
 
             MarkSceneDirty();
+
+            if (brush != BrushTypes.Water && pointData.Type != PointTypes.Water)
+            {
+                pointData.Type = newPointType;
+                return;
+            }
 
             pointData.Type = newPointType;
 
@@ -485,7 +516,7 @@ namespace FirePatrol
 
             var currentBrush = _currentBrush.Value;
 
-            if (currentBrush == BrushTypes.Grass || currentBrush == BrushTypes.Water)
+            if (currentBrush == BrushTypes.Grass || currentBrush == BrushTypes.Water || currentBrush == BrushTypes.Forest || currentBrush == BrushTypes.Rocky)
             {
                 var pointUnderMouse = TryGetPointAtScreenPoint(screenPos, levelData);
 
@@ -551,7 +582,7 @@ namespace FirePatrol
 
             var currentBrush = _currentBrush.Value;
 
-            if (currentBrush == BrushTypes.Grass || currentBrush == BrushTypes.Water)
+            if (currentBrush == BrushTypes.Grass || currentBrush == BrushTypes.Water || currentBrush == BrushTypes.Forest || currentBrush == BrushTypes.Rocky)
             {
                 PointData pointUnderMouse = TryGetPointAtScreenPoint(screenPos, levelData);
 
@@ -879,6 +910,22 @@ namespace FirePatrol
                     if (GUILayout.Button("Water", _currentBrush == BrushTypes.Water ? GetSelectedButtonStyle() : regularButtonStyle))
                     {
                         _currentBrush = BrushTypes.Water;
+                        _highlightedPoint = null;
+                        _highlightedPropPosition = null;
+                        SceneView.RepaintAll();
+                    }
+
+                    if (GUILayout.Button("Forest", _currentBrush == BrushTypes.Forest ? GetSelectedButtonStyle() : regularButtonStyle))
+                    {
+                        _currentBrush = BrushTypes.Forest;
+                        _highlightedPoint = null;
+                        _highlightedPropPosition = null;
+                        SceneView.RepaintAll();
+                    }
+
+                    if (GUILayout.Button("Rocky", _currentBrush == BrushTypes.Rocky ? GetSelectedButtonStyle() : regularButtonStyle))
+                    {
+                        _currentBrush = BrushTypes.Rocky;
                         _highlightedPoint = null;
                         _highlightedPropPosition = null;
                         SceneView.RepaintAll();

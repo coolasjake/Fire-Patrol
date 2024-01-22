@@ -9,12 +9,45 @@ namespace FirePatrol
         public static FireController singleton;
 
         public LevelData leveldata;
-        public ParticleSystem fireParticlePrefab;
+        public FireParticlesManager fireParticlePrefab;
         public float fireSpawnHeight = 2f;
         public float dropAnimationSpeed = 30f;
 
+        [Tooltip("Duration of fire stages for 'Grass' type points. Set to 0 or less to skip the stage.")]
         [EnumNamedArray(typeof(FireStage))]
-        public float[] fireStageDurations = new float[System.Enum.GetValues(typeof(FireStage)).Length];
+        public float[] grassStageDurations = new float[System.Enum.GetValues(typeof(FireStage)).Length];
+        [Tooltip("Duration of fire stages for 'Forest' type points. Set to 0 or less to skip the stage.")]
+        [EnumNamedArray(typeof(FireStage))]
+        public float[] forestStageDurations = new float[System.Enum.GetValues(typeof(FireStage)).Length];
+        [Tooltip("Duration of fire stages for 'Rocky' type points. Set to 0 or less to skip the stage.")]
+        [EnumNamedArray(typeof(FireStage))]
+        public float[] rockyStageDurations = new float[System.Enum.GetValues(typeof(FireStage)).Length];
+
+        //[Tooltip("Roll the random chance once, then pick a valid direction if available, or roll for each direction.")]
+        //public bool rollForEachDirection = true;
+
+        [Tooltip("Chance at the end of each fire stage to spread fire to neighboring points.")]
+        [EnumNamedArray(typeof(FireStage))]
+        public float[] stageStartSpreadChance = new float[System.Enum.GetValues(typeof(FireStage)).Length];
+
+        [System.Serializable]
+        public class PointTypeSettings
+        {
+        }
+
+        private float StageDurationForPoint(PointData point)
+        {
+            switch (point.Type)
+            {
+                case PointTypes.Grass:
+                    return grassStageDurations[(int)point.fireStage];
+                case PointTypes.Forest:
+                    return grassStageDurations[(int)point.fireStage];
+                case PointTypes.Rocky:
+                    return grassStageDurations[(int)point.fireStage];
+            }
+            return -1;
+        }
 
         void Awake()
         {
@@ -43,7 +76,10 @@ namespace FirePatrol
                 if (point.onFire)
                 {
                     point.fireprogress += Time.deltaTime;
-                    if (point.fireprogress >= fireStageDurations[(int)point.fireStage])
+                    float stageDur = StageDurationForPoint(point);
+                    if (stageDur <= 0)
+                        GoToNextFireStage(point);
+                    else if (point.fireprogress >= stageDur)
                         ProgressFireStage(point);
                     SetBurntLevel(point);
                 }
@@ -58,13 +94,15 @@ namespace FirePatrol
                 case FireStage.none:
                     break;
                 case FireStage.sparks:
-                    burntLevel = (point.fireprogress / fireStageDurations[(int)FireStage.sparks]) * 0.25f;
+                    break;
+                case FireStage.smallFlames:
+                    burntLevel = (point.fireprogress / StageDurationForPoint(point)) * 0.25f;
                     break;
                 case FireStage.inferno:
-                    burntLevel = 0.25f + (point.fireprogress / fireStageDurations[(int)FireStage.sparks]) * 0.5f;
+                    burntLevel = 0.25f + (point.fireprogress / StageDurationForPoint(point)) * 0.5f;
                     break;
                 case FireStage.dying:
-                    burntLevel = 0.75f + (point.fireprogress / fireStageDurations[(int)FireStage.sparks]) * 0.25f;
+                    burntLevel = 0.75f + (point.fireprogress / StageDurationForPoint(point)) * 0.25f;
                     break;
             }
 
@@ -124,32 +162,52 @@ namespace FirePatrol
             //Debug.Log("Wetting point: " + point.Row + ", " + point.Col + " (type = " + point.Type + ")", point.fireParticle);
             point.wet = true;
             point.onFire = false;
-            point.fireParticle.Stop(false, ParticleSystemStopBehavior.StopEmitting);
+            point.fireParticles.ShowWet();
         }
 
         private void ProgressFireStage(PointData point)
+        {
+            GoToNextFireStage(point);
+
+            //Trigger behaviours for the new stage
+            switch (point.fireStage)
+            {
+                case FireStage.ashes:
+                    point.onFire = false;
+                    break;
+                case FireStage.none:
+                    point.onFire = false;
+                    break;
+            }
+            SpreadFireWithChance(point, stageStartSpreadChance[(int)point.fireStage]);
+        }
+
+        private void GoToNextFireStage(PointData point)
         {
             //Go to next stage and trigger behaviours
             switch (point.fireStage)
             {
                 case FireStage.none:
                     point.fireStage = FireStage.sparks;
-                    point.fireParticle.Play();
                     break;
                 case FireStage.sparks:
+                    point.fireStage = FireStage.smallFlames;
+                    break;
+                case FireStage.smallFlames:
                     point.fireStage = FireStage.inferno;
-                    SpreadFireWithChance(point, 0.7f);
                     break;
                 case FireStage.inferno:
                     point.fireStage = FireStage.dying;
-                    SpreadFireWithChance(point, 0.3f);
                     break;
                 case FireStage.dying:
                     point.fireStage = FireStage.ashes;
-                    point.fireParticle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-                    point.onFire = false;
+                    break;
+                case FireStage.ashes:
+                    point.fireStage = FireStage.none;
                     break;
             }
+            point.fireprogress = 0;
+            point.fireParticles.ShowStage(point.fireStage);
         }
 
         private void SpreadFireWithChance(PointData point, float chance)
@@ -166,12 +224,17 @@ namespace FirePatrol
 
         private void SetupFireParticles()
         {
+            int i = 0;
             foreach (PointData point in leveldata.Points)
             {
                 if (point.Type == PointTypes.Water)
-                    point.fireParticle = null;
+                    point.fireParticles = null;
                 else
-                    point.fireParticle = Instantiate(fireParticlePrefab, point.Position + new Vector3(0, fireSpawnHeight, 0), Quaternion.identity, transform);
+                {
+                    point.fireParticles = Instantiate(fireParticlePrefab, point.Position + new Vector3(0, fireSpawnHeight, 0), Quaternion.identity, transform);
+                    point.fireParticles.name = "FireParticles " + i;
+                }
+                ++i;
             }
         }
 
@@ -184,6 +247,7 @@ namespace FirePatrol
                     landPoints.Add(i);
             }
             int index = landPoints[Random.Range(0, landPoints.Count)];
+            Debug.Log("Started fire on " + leveldata.Points[index].Id + " (type = " + leveldata.Points[index].Type + ")");
             SetPointOnFire(index);
 
         }

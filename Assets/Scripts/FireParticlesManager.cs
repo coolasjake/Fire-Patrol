@@ -15,6 +15,8 @@ namespace FirePatrol
             if (fireStageParticles == null || index < 0 || index > fireStageParticles.Length - 1)
                 return;
 
+            Debug.Log("Showing stage: " + stage.ToString());
+
             for (int i = 0; i < fireStageParticles.Length; ++i)
             {
                 if (fireStageParticles[i] == null)
@@ -24,6 +26,12 @@ namespace FirePatrol
                 else
                     fireStageParticles[i].Stop(false, ParticleSystemStopBehavior.StopEmitting);
             }
+        }
+
+        public void ShowWet()
+        {
+            ShowStage(FireStage.none);
+            //Show wet effect.
         }
     }
 }
