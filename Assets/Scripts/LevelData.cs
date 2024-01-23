@@ -62,6 +62,7 @@ namespace FirePatrol
         public bool wet = false;
         public FireStage fireStage = FireStage.none;
         public float fireprogress = 0;
+        public float heat = 0;
         public int Id;
         public int Row;
         public int Col;
