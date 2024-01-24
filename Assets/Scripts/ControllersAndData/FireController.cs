@@ -25,5 +25,7 @@ namespace FirePatrol
         public abstract void SplashPointsInRadius(Vector3 position, float radius);
 
         public abstract float LevelBurntPercentage();
+
+        public abstract bool NoFireInLevel();
     }
 }

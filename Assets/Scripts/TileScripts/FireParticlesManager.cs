@@ -4,12 +4,18 @@ using UnityEngine;
 
 namespace FirePatrol
 {
+    [RequireComponent(typeof(AudioSource))]
     public class FireParticlesManager : MonoBehaviour
     {
+        public AudioSource audioSource;
+        [EnumNamedArray(typeof(FireStage))]
+        public AudioClip[] fireStageSounds = new AudioClip[System.Enum.GetValues(typeof(FireStage)).Length];
         [EnumNamedArray(typeof(FireStage))]
         public ParticleSystem[] fireStageParticles = new ParticleSystem[System.Enum.GetValues(typeof(FireStage)).Length];
         [Min(0.1f)]
         public float transitionTime = 1f;
+        [Min(0.1f)]
+        public float audioFadeTime = 1f;
 
         private int _currentlyPlayingParticle = 0;
 
@@ -50,6 +56,46 @@ namespace FirePatrol
             }
             if (fireStageParticles[index] != null)
                 fireStageParticles[index].Play();
+        }
+
+        public void SwapSound(FireStage stage)
+        {
+            int index = (int)stage;
+            if (fireStageSounds == null || index < 0 || index > fireStageSounds.Length - 1)
+                return;
+
+            if (_audioFadeCoroutine == null)
+                startVolume = audioSource.volume;
+            else
+                StopCoroutine(_audioFadeCoroutine);
+            _audioFadeCoroutine = StartCoroutine(AudioFade(index));
+        }
+
+        private float startVolume = 1f;
+        private Coroutine _audioFadeCoroutine = null;
+        private IEnumerator AudioFade(int newSoundIndex)
+        {
+            WaitForEndOfFrame wait = new WaitForEndOfFrame();
+            float startTime = Time.time;
+            float t = 0;
+            while (Time.time < startTime + (audioFadeTime / 2f))
+            {
+                t = (Time.time - startTime) / (audioFadeTime / 2f);
+                audioSource.volume = Mathf.Lerp(startVolume, 0, t);
+                yield return wait;
+            }
+
+            audioSource.clip = fireStageSounds[newSoundIndex];
+            audioSource.Play();
+
+            while (Time.time < startTime + audioFadeTime)
+            {
+                t = (Time.time - startTime - (audioFadeTime / 2f)) / (audioFadeTime / 2f);
+                audioSource.volume = Mathf.Lerp(0, startVolume, t);
+                yield return wait;
+            }
+
+            _audioFadeCoroutine = null;
         }
 
         public void ShowWet()

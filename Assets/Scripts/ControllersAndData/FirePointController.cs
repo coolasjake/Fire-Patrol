@@ -146,6 +146,8 @@ namespace FirePatrol
         private void WetPoint(PointData point)
         {
             //Debug.Log("Wetting point: " + point.Row + ", " + point.Col + " (type = " + point.Type + ")", point.fireParticle);
+            if (point == null)
+                return;
             point.wet = true;
             point.onFire = false;
             point.fireParticles.ShowWet();
