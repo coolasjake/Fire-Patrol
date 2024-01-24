@@ -25,6 +25,8 @@ namespace FirePatrol
         [EnumNamedArray(typeof(FireStage))]
         public float[] stageStartSpreadChance = new float[System.Enum.GetValues(typeof(FireStage)).Length];
 
+        private float _maxTotalBurnValue = 0;
+
         private float StageDurationForPoint(PointData point)
         {
             switch (point.Type)
@@ -32,9 +34,9 @@ namespace FirePatrol
                 case PointTypes.Grass:
                     return grassStageDurations[(int)point.fireStage];
                 case PointTypes.Forest:
-                    return grassStageDurations[(int)point.fireStage];
+                    return forestStageDurations[(int)point.fireStage];
                 case PointTypes.Rocky:
-                    return grassStageDurations[(int)point.fireStage];
+                    return rockyStageDurations[(int)point.fireStage];
             }
             return -1;
         }
@@ -253,9 +255,61 @@ namespace FirePatrol
             //point.fireParticle.Play();
         }
 
+        public override bool NoFireInLevel()
+        {
+            foreach (PointData point in leveldata.Points)
+            {
+                if (point.onFire)
+                    return false;
+            }
+
+            return true;
+        }
+
+        public void CalculateMaxBurnValue()
+        {
+            float max = 0;
+            List<TileData> checkedTiles = new List<TileData>();
+            foreach (PointData point in leveldata.Points)
+            {
+                if (point.Type != PointTypes.Water && point.Type != PointTypes.Rocky)
+                {
+                    List<TileData> tiles = leveldata.GetNeighbourTiles(point);
+                    foreach (TileData tile in tiles)
+                    {
+                        if (checkedTiles.Contains(tile) == false)
+                        {
+                            checkedTiles.Add(tile);
+                            max += 1f;
+                        }
+                    }
+                }
+            }
+
+            _maxTotalBurnValue = max;
+        }
+
         public override float LevelBurntPercentage()
         {
-            throw new System.NotImplementedException();
+            float total = 0;
+            List<TileData> checkedTiles = new List<TileData>();
+            foreach (PointData point in leveldata.Points)
+            {
+                if (point.Type != PointTypes.Water && point.Type != PointTypes.Rocky)
+                {
+                    List<TileData> tiles = leveldata.GetNeighbourTiles(point);
+                    foreach (TileData tile in tiles)
+                    {
+                        if (checkedTiles.Contains(tile) == false)
+                        {
+                            checkedTiles.Add(tile);
+                            total += tile.burntEffect.burntLevel;
+                        }
+                    }
+                }
+            }
+
+            return total / _maxTotalBurnValue;
         }
     }
 }
