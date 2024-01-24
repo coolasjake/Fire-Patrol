@@ -18,7 +18,7 @@ namespace FirePatrol
             waterTrail.Stop(false, ParticleSystemStopBehavior.StopEmitting);
             waterSplash.Play();
             StartCoroutine(DestroyAfterTime(3f));
-            FirePointController.singleton.SplashPointsInRadius(transform.position, splashRadius);
+            FireController.singleton.SplashPointsInRadius(transform.position, splashRadius);
         }
 
         private IEnumerator DestroyAfterTime(float time)
