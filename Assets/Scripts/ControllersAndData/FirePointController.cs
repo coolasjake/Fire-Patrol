@@ -4,10 +4,8 @@ using UnityEngine;
 
 namespace FirePatrol
 {
-    public class FireController : MonoBehaviour
+    public class FirePointController : FireController
     {
-        public static FireController singleton;
-
         public LevelData leveldata;
         public FireParticlesManager fireParticlePrefab;
         public float fireSpawnHeight = 2f;
@@ -23,17 +21,9 @@ namespace FirePatrol
         [EnumNamedArray(typeof(FireStage))]
         public float[] rockyStageDurations = new float[System.Enum.GetValues(typeof(FireStage)).Length];
 
-        //[Tooltip("Roll the random chance once, then pick a valid direction if available, or roll for each direction.")]
-        //public bool rollForEachDirection = true;
-
         [Tooltip("Chance at the end of each fire stage to spread fire to neighboring points.")]
         [EnumNamedArray(typeof(FireStage))]
         public float[] stageStartSpreadChance = new float[System.Enum.GetValues(typeof(FireStage)).Length];
-
-        [System.Serializable]
-        public class PointTypeSettings
-        {
-        }
 
         private float StageDurationForPoint(PointData point)
         {
@@ -49,15 +39,9 @@ namespace FirePatrol
             return -1;
         }
 
-        void Awake()
-        {
-            singleton = this;
-        }
-
         // Start is called before the first frame update
         void Start()
         {
-            print(Physics.gravity);
             BurntEffect.dropSpeed = dropAnimationSpeed;
             SetupFireParticles();
             AddFireToRandomPoint();
@@ -117,7 +101,7 @@ namespace FirePatrol
             }
         }
 
-        public void SplashClosestTwoPoints(Vector3 position, float radius)
+        public override void SplashClosestTwoPoints(Vector3 position, float radius)
         {
             float closestDistSqr = float.PositiveInfinity;
             PointData closestPoint = null;
@@ -139,7 +123,7 @@ namespace FirePatrol
                 WetPoint(secondClosestPoint);
         }
 
-        public void SplashPointsInRadius(Vector3 position, float radius)
+        public override void SplashPointsInRadius(Vector3 position, float radius)
         {
             List<PointData> splashedPoints = new List<PointData>();
             foreach (PointData point in leveldata.Points)
@@ -238,12 +222,18 @@ namespace FirePatrol
             }
         }
 
+        public override void StartRandomFire()
+        {
+            //Should change to choose from preset list of points.
+            AddFireToRandomPoint();
+        }
+
         private void AddFireToRandomPoint()
         {
             List<int> landPoints = new List<int>();
             for(int i = 0; i < leveldata.Points.Count; ++i)
             {
-                if (leveldata.Points[i].Type == PointTypes.Grass)
+                if (leveldata.Points[i].Type == PointTypes.Grass || leveldata.Points[i].Type == PointTypes.Grass)
                     landPoints.Add(i);
             }
             int index = landPoints[Random.Range(0, landPoints.Count)];
@@ -261,6 +251,11 @@ namespace FirePatrol
         {
             point.onFire = true;
             //point.fireParticle.Play();
+        }
+
+        public override float LevelBurntPercentage()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
