@@ -9,12 +9,15 @@ public class PauseMenu : MonoBehaviour
     public SettingsManager settingsMenu;
     public Feedback feedbackForm;
     public string menuSceneName = "EndlessMenu";
+    public bool hideMouseOnResume = false;
+    public bool lockMouseOnResume = false;
+    public bool absorbClick = true;
 
     void Start()
     {
         PauseManager.pauseMenu = this;
         settingsMenu.LoadSettings();
-        PauseManager.UnPause();
+        PauseManager.UnPause(hideMouseOnResume, lockMouseOnResume);
     }
 
     private void Update()
@@ -28,7 +31,7 @@ public class PauseMenu : MonoBehaviour
     public void Resume()
     {
         //manager.ApplySettings();
-        PauseManager.UnPause();
+        PauseManager.UnPause(hideMouseOnResume, lockMouseOnResume);
     }
 
     public void CloseMenu()

@@ -6,6 +6,8 @@ public static class PauseManager
 {
     private static bool _isPaused = false;
     private static bool _systemPaused = false;
+    private static bool _lockMouseDefault = false;
+    private static bool _hideMouseDefault = false;
     private static List<MonoBehaviour> _systemPausers = new List<MonoBehaviour>();
     public static PauseMenu pauseMenu;
 
@@ -44,6 +46,21 @@ public static class PauseManager
 
     public static void UnPause()
     {
+        _isPaused = false;
+
+        if (pauseMenu != null)
+            pauseMenu.CloseMenu();
+
+        if (_systemPaused == false)
+        {
+            UnPauseEffects();
+        }
+    }
+
+    public static void UnPause(bool hideMouse, bool lockMouse)
+    {
+        _lockMouseDefault = lockMouse;
+        _hideMouseDefault = hideMouse;
         _isPaused = false;
 
         if (pauseMenu != null)
@@ -96,8 +113,10 @@ public static class PauseManager
     {
         AudioManager.ResumeAll();
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        if (_lockMouseDefault)
+            Cursor.lockState = CursorLockMode.Locked;
+        if (_hideMouseDefault)
+            Cursor.visible = false;
         Time.timeScale = 1;
     }
 }
