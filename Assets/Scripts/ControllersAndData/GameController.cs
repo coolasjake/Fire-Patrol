@@ -16,8 +16,14 @@ public class GameController : MonoBehaviour
     public GameObject seasonCompletePanel;
     public TMP_Text burnPercentText;
 
+    public Image firePercentChart;
+    public ParticleSystem rainstorm;
+    public AudioSource rainSound;
+
     public Gradient seasonBarGradient = new Gradient();
     public AnimationCurve fireRateOverSeason = new AnimationCurve();
+    [Min(1)]
+    public float rainDuration = 15;
     public float baseFireFrequency = 20f;
     public float seasonRealtimeDuration = 300f;
     public int seasonDaysDuration = 90;
@@ -27,6 +33,8 @@ public class GameController : MonoBehaviour
     private float _seasonStartTime = 0f;
     private float _lastIgniteTime = 0f;
     private float _lastFireTime = 0f;
+    private bool _seasonEnded = false;
+    private bool _rainStarted = false;
 
     // Start is called before the first frame update
     void Start()
@@ -43,31 +51,50 @@ public class GameController : MonoBehaviour
 
     private void GameTick()
     {
+        if (_seasonEnded)
+            return;
+
         float normalisedTime = (Time.time - _seasonStartTime) / seasonRealtimeDuration;
         normalisedTime = Mathf.Clamp01(normalisedTime);
         UpdateSeasonTimer(normalisedTime);
         if (normalisedTime >= 1)
         {
             EndSeason();
-            return;
         }
-
-        if (FireController.singleton.NoFireInLevel())
+        else if (Time.time >= _seasonStartTime + seasonRealtimeDuration - rainDuration)
+        {
+            StartRain();
+        }
+        else if (FireController.singleton.NoFireInLevel() || spawnFiresDuringFire)
         {
             float spawnDelayStart = spawnFiresDuringFire ? _lastIgniteTime : _lastFireTime;
             float currentFireRate = GetFireRate(normalisedTime);
             if (currentFireRate > 0 && Time.time > spawnDelayStart + (baseFireFrequency / currentFireRate))
-            SpawnFire();
+                SpawnFire();
         }
         else
             _lastFireTime = Time.time;
+
+        UpdateFireChart();
+    }
+
+    private void StartRain()
+    {
+        if (_rainStarted)
+            return;
+        _rainStarted = true;
+        FireController.singleton.PutOutAllFires();
+        rainstorm.Play();
+        rainSound.Play();
     }
 
     private void EndSeason()
     {
+        _seasonEnded = true;
         float burnPercent = FireController.singleton.LevelBurntPercentage();
         seasonCompletePanel.SetActive(true);
         burnPercentText.text = ((1f - burnPercent) * 100f).DecimalPlaces(0) + "%";
+        StartRain();
     }
 
     private void SpawnFire()
@@ -82,14 +109,21 @@ public class GameController : MonoBehaviour
         return fireRateOverSeason.Evaluate(time01 * curveLength);
     }
 
+    private void UpdateFireChart()
+    {
+        float s = FireController.singleton.PercentOfLandOnFire;
+        if (s > 0)
+            s = Mathf.Max(0.1f, s);
+        Vector3 target = new Vector3(s, s, s);
+        firePercentChart.transform.localScale = Vector3.MoveTowards(firePercentChart.transform.localScale, target, Time.deltaTime * 0.5f);
+    }
+
     private void UpdateSeasonTimer(float seasonTime01)
     {
         seasonTimeText.text = DayToDate(TimeToDays(seasonTime01));
         seasonTimeBar.fillAmount = seasonTime01;
         seasonTimeBar.color = seasonBarGradient.Evaluate(seasonTime01);
     }
-
-    private string SeasonDate => DayToDate(TimeToDays(Time.time - _seasonStartTime));
 
     private int TimeToDays(float seasonTime01)
     {

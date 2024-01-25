@@ -7,6 +7,7 @@ namespace FirePatrol
     public abstract class FireController : MonoBehaviour
     {
         public static FireController singleton;
+        public abstract float PercentOfLandOnFire { get; }
 
         void Awake()
         {
@@ -21,6 +22,8 @@ namespace FirePatrol
         public abstract void StartGame();
 
         public abstract void StartRandomFire();
+
+        public abstract void PutOutAllFires();
 
         public abstract void SplashClosestTwoPoints(Vector3 position, float radius);
 

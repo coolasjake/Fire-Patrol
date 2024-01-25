@@ -14,6 +14,7 @@ namespace FirePatrol
         private SimpleTile[,] _tiles;
         private int _gridWidth = 0;
         private int _gridHeight = 0;
+        public override float PercentOfLandOnFire => 0f;//_percentLandOnFire;
 
         public Direction windDirection = Direction.None;
 
@@ -99,6 +100,11 @@ namespace FirePatrol
         }
 
         public override void SplashClosestTwoPoints(Vector3 position, float radius)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void PutOutAllFires()
         {
             throw new System.NotImplementedException();
         }

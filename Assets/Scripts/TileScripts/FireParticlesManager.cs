@@ -7,6 +7,9 @@ namespace FirePatrol
     [RequireComponent(typeof(AudioSource))]
     public class FireParticlesManager : MonoBehaviour
     {
+        public static int[] numSoundsPlaying = new int[System.Enum.GetValues(typeof(FireStage)).Length];
+        public static int maxSimultaneousSounds = 3;
+
         public AudioSource audioSource;
         [EnumNamedArray(typeof(FireStage))]
         public AudioClip[] fireStageSounds = new AudioClip[System.Enum.GetValues(typeof(FireStage)).Length];
@@ -26,20 +29,22 @@ namespace FirePatrol
             if (fireStageParticles == null || index < 0 || index > fireStageParticles.Length - 1)
                 return;
 
+            //If the state or the particle effect are the same, just play the sound.
             if (index == _currentlyPlayingParticle || fireStageParticles[_currentlyPlayingParticle] == fireStageParticles[index])
             {
-                ShowStageSimple(stage);
+                SwapSound(stage);
+                _currentlyPlayingParticle = index;
                 return;
             }
 
-            if (_transitionCoroutine == null)
-            {
-                Debug.Log(name + " Showing stage: " + stage.ToString());
-                StartCoroutine(TransitionParticles(fireStageParticles[_currentlyPlayingParticle], fireStageParticles[index]));
-                _currentlyPlayingParticle = index;
-            }
+            //If a transition is already underway, end it, then start a transition between the two effects
+            if (_transitionCoroutine != null)
+                EndTransition();
+            StartCoroutine(TransitionParticles(fireStageParticles[_currentlyPlayingParticle], fireStageParticles[index]));
 
+            //Play the sound of the particle (sound swapping uses currentlyPlayedIndex to fade out the old sound)
             SwapSound(stage);
+            _currentlyPlayingParticle = index;
         }
 
         public void ShowStageSimple(FireStage stage)
@@ -48,6 +53,8 @@ namespace FirePatrol
             if (fireStageParticles == null || index < 0 || index > fireStageParticles.Length - 1)
                 return;
 
+            if (_transitionCoroutine != null)
+                EndTransition();
 
             for (int i = 0; i < fireStageParticles.Length; ++i)
             {
@@ -60,6 +67,7 @@ namespace FirePatrol
                 fireStageParticles[index].Play();
 
             SwapSound(stage);
+            _currentlyPlayingParticle = index;
         }
 
         public void SwapSound(FireStage stage)
@@ -80,23 +88,39 @@ namespace FirePatrol
         private IEnumerator AudioFade(int newSoundIndex)
         {
             WaitForEndOfFrame wait = new WaitForEndOfFrame();
+            WaitForSeconds soundsFullWait = new WaitForSeconds(3f);
             float startTime = Time.time;
             float t = 0;
-            while (Time.time < startTime + (audioFadeTime / 2f))
+
+            //Stop and fade out old sound
+            if (audioSource.clip != null)
             {
-                t = (Time.time - startTime) / (audioFadeTime / 2f);
-                audioSource.volume = Mathf.Lerp(startVolume, 0, t);
-                yield return wait;
+                while (Time.time < startTime + (audioFadeTime / 2f))
+                {
+                    t = (Time.time - startTime) / (audioFadeTime / 2f);
+                    audioSource.volume = Mathf.Lerp(startVolume, 0, t);
+                    yield return wait;
+                }
+                numSoundsPlaying[_currentlyPlayingParticle] -= 1;
             }
 
+            //Start and fade in new sound
             audioSource.clip = fireStageSounds[newSoundIndex];
-            audioSource.Play();
-
-            while (Time.time < startTime + audioFadeTime)
+            if (audioSource.clip != null)
             {
-                t = (Time.time - startTime - (audioFadeTime / 2f)) / (audioFadeTime / 2f);
-                audioSource.volume = Mathf.Lerp(0, startVolume, t);
-                yield return wait;
+                //If too many sounds are playing at once 
+                if (numSoundsPlaying[newSoundIndex] >= maxSimultaneousSounds)
+                    yield return soundsFullWait;
+
+                numSoundsPlaying[newSoundIndex] += 1;
+                audioSource.Play();
+
+                while (Time.time < startTime + audioFadeTime)
+                {
+                    t = (Time.time - startTime - (audioFadeTime / 2f)) / (audioFadeTime / 2f);
+                    audioSource.volume = Mathf.Lerp(0, startVolume, t);
+                    yield return wait;
+                }
             }
 
             _audioFadeCoroutine = null;
@@ -109,13 +133,27 @@ namespace FirePatrol
         }
 
         private Coroutine _transitionCoroutine = null;
-        private IEnumerator TransitionParticles(ParticleSystem oldParticle, ParticleSystem newParticle)
+        private bool oldExists = false;
+        private ParticleSystem oldParticle;
+        private ParticleSystem.EmissionModule oldEmmission;
+        private ParticleSystem.MainModule oldMain;
+        private float oldOriginalRate = 1f;
+        private float oldOriginalSpeed = 1f;
+        private bool newExists = false;
+        private ParticleSystem newParticle;
+        private ParticleSystem.EmissionModule newEmmission;
+        private ParticleSystem.MainModule newMain;
+        private float newOriginalRate = 1f;
+        private float newOriginalSpeed = 1f;
+        private IEnumerator TransitionParticles(ParticleSystem oldP, ParticleSystem newP)
         {
+            //Set up original particle effect
+            oldParticle = oldP;
             bool oldExists = false;
             ParticleSystem.EmissionModule oldEmmission;
-            float oldOriginalRate = 1f;
+            oldOriginalRate = 1f;
             ParticleSystem.MainModule oldMain;
-            float oldOriginalSpeed = 1f;
+            oldOriginalSpeed = 1f;
             if (oldParticle != null)
             {
                 oldExists = true;
@@ -125,15 +163,15 @@ namespace FirePatrol
 
                 oldMain = oldParticle.main;
                 oldOriginalSpeed = oldMain.startSpeedMultiplier;
-
-                Debug.Log(oldOriginalSpeed);
             }
 
+            //Set up and play new particle effect
+            newParticle = newP;
             bool newExists = false;
             ParticleSystem.EmissionModule newEmmission;
-            float newOriginalRate = 1f;
+            newOriginalRate = 1f;
             ParticleSystem.MainModule newMain;
-            float newOriginalSpeed = 1f;
+            newOriginalSpeed = 1f;
             if (newParticle != null)
             {
                 newExists = true;
@@ -147,8 +185,10 @@ namespace FirePatrol
                 newMain.startSpeedMultiplier = 0.5f;
 
                 newParticle.Play();
-                Debug.Log(name + " Playing " + newParticle.name);
             }
+
+            if (oldExists == false && newExists == false)
+                yield break;
 
             WaitForEndOfFrame wait = new WaitForEndOfFrame();
             float startTime = Time.time;
@@ -169,16 +209,25 @@ namespace FirePatrol
                 yield return wait;
             }
 
+            EndTransition();
+
+            _transitionCoroutine = null;
+        }
+
+        private void EndTransition()
+        {
+
             if (oldExists)
             {
                 oldParticle.Stop();
                 oldEmmission.rateOverTimeMultiplier = oldOriginalRate;
-                Debug.Log(name + " Stopping " + oldParticle.name);
+                oldMain.startSpeedMultiplier = oldOriginalSpeed;
             }
             if (newExists)
+            {
                 newEmmission.rateOverTimeMultiplier = newOriginalRate;
-
-            _transitionCoroutine = null;
+                newMain.startSpeedMultiplier = newOriginalSpeed;
+            }
         }
     }
 }
