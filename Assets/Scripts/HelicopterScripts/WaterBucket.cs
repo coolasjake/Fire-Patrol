@@ -13,10 +13,11 @@ namespace FirePatrol
         public float loweredLength = 8f;
         public float launchToLowerDelay = 0.5f;
         public float winchSpeed = 1f;
+        public int splashesPerRefill = 1;
         public bool startWithWater = true;
         public float splashRadius = 20f;
 
-        private bool _hasWater = false;
+        private int _numSplashes = 0;
         private bool _inWater = false;
         private float _lastWaterLaunch = 0f;
 
@@ -30,7 +31,8 @@ namespace FirePatrol
             if (animator == null)
                 animator = GetComponent<Animator>();
             raisedLength = cord.cordLength;
-            _hasWater = startWithWater;
+            if (startWithWater)
+            _numSplashes = splashesPerRefill;
         }
 
         // Update is called once per frame
@@ -38,7 +40,7 @@ namespace FirePatrol
         {
             if (Input.GetButtonDown("Fire"))
             {
-                if (_hasWater)
+                if (_numSplashes > 0 && _inWater == false)
                     LaunchWater();
             }
             else if (Input.GetButton("Fire") && Time.time > _lastWaterLaunch + launchToLowerDelay)
@@ -49,12 +51,13 @@ namespace FirePatrol
 
         private void LaunchWater()
         {
-            _hasWater = false;
+            _numSplashes -= 1;
             _lastWaterLaunch = Time.time;
             WaterSplash water = Instantiate(waterBlob, transform.position, Quaternion.identity);
             water.RB.velocity = RB.velocity;
             water.splashRadius = splashRadius;
-            animator.Play("EmptyBucket");
+            if (_numSplashes == 0)
+                animator.Play("EmptyBucket");
         }
 
         private void LowerBucket()
@@ -71,17 +74,27 @@ namespace FirePatrol
             }
         }
 
+        private void RefillBucket()
+        {
+            _inWater = true;
+            if (_numSplashes == 0)
+            {
+                animator.Play("FillBucket");
+            }
+            _numSplashes = splashesPerRefill;
+        }
+
         private void OnTriggerStay(Collider other)
         {
             if (((1 << other.gameObject.layer) & waterLayer) != 0)
             {
-                _inWater = true;
-                if (_hasWater == false)
-                {
-                    _hasWater = true;
-                    animator.Play("FillBucket");
-                }
+                RefillBucket();
             }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            _inWater = false;
         }
 
         private void OnDrawGizmosSelected()
