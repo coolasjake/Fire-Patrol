@@ -52,10 +52,10 @@ MonoBehaviour:
   audioSource: {fileID: 2684179225747077773}
   fireStageSounds:
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 8300000, guid: 6a194601c79b1b344a67e7b56ac84110, type: 3}
+  - {fileID: 8300000, guid: 6a194601c79b1b344a67e7b56ac84110, type: 3}
+  - {fileID: 8300000, guid: 6a194601c79b1b344a67e7b56ac84110, type: 3}
+  - {fileID: 8300000, guid: 6a194601c79b1b344a67e7b56ac84110, type: 3}
   - {fileID: 0}
   fireStageParticles:
   - {fileID: 0}
@@ -64,7 +64,7 @@ MonoBehaviour:
   - {fileID: 6777990783153359242}
   - {fileID: 1371060760582926127}
   - {fileID: 0}
-  transitionTime: 5
+  transitionTime: 3
   audioFadeTime: 1
 --- !u!82 &2684179225747077773
 AudioSource:
@@ -78,7 +78,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.9764887
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -86,8 +86,8 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 70
+  MaxDistance: 200
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -122,7 +122,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0

@@ -38,6 +38,8 @@ namespace FirePatrol
                 StartCoroutine(TransitionParticles(fireStageParticles[_currentlyPlayingParticle], fireStageParticles[index]));
                 _currentlyPlayingParticle = index;
             }
+
+            SwapSound(stage);
         }
 
         public void ShowStageSimple(FireStage stage)
@@ -56,6 +58,8 @@ namespace FirePatrol
             }
             if (fireStageParticles[index] != null)
                 fireStageParticles[index].Play();
+
+            SwapSound(stage);
         }
 
         public void SwapSound(FireStage stage)
@@ -100,7 +104,7 @@ namespace FirePatrol
 
         public void ShowWet()
         {
-            ShowStage(FireStage.none);
+            ShowStageSimple(FireStage.none);
             //Show wet effect.
         }
 

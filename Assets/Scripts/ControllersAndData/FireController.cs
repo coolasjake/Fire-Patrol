@@ -18,6 +18,8 @@ namespace FirePatrol
             singleton = this;
         }
 
+        public abstract void StartGame();
+
         public abstract void StartRandomFire();
 
         public abstract void SplashClosestTwoPoints(Vector3 position, float radius);

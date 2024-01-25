@@ -29,6 +29,11 @@ namespace FirePatrol
             
         }
 
+        public override void StartGame()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public void GenerateTileGrid()
         {
 

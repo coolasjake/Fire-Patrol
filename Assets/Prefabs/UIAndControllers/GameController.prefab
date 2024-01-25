@@ -290,10 +290,53 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 5
     m_NumAlphaKeys: 2
+  fireRateOverSeason:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.5
+      inSlope: 0.8775959
+      outSlope: 0.8775959
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.84900856
+      value: 1.2450864
+      inSlope: -1.9547861
+      outSlope: -1.9547861
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.07259632
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.95
+      value: 0
+      inSlope: -0.28906807
+      outSlope: -0.28906807
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 1
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  baseFireFrequency: 20
   seasonRealtimeDuration: 300
   seasonDaysDuration: 90
   spawnNewFireDuringFire: 0
-  nextFireSpawnDelay: 20
+  menuSceneName: Menu
 --- !u!1 &3284945093917501634
 GameObject:
   m_ObjectHideFlags: 0
@@ -1017,6 +1060,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
+      objectReference: {fileID: 4572626258105983238}
+    - target: {fileID: 5591715667065206463, guid: e90ab2a3b580eb8499476caa0256b0d1,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ReturnToMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 5591715667065206463, guid: e90ab2a3b580eb8499476caa0256b0d1,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameController, FirePatrol
       objectReference: {fileID: 0}
     - target: {fileID: 7501954900307244812, guid: e90ab2a3b580eb8499476caa0256b0d1,
         type: 3}
@@ -1161,7 +1214,7 @@ PrefabInstance:
     - target: {fileID: 7501954900911244008, guid: e90ab2a3b580eb8499476caa0256b0d1,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -2.514145
+      value: -2.5141296
       objectReference: {fileID: 0}
     - target: {fileID: 7501954900911244011, guid: e90ab2a3b580eb8499476caa0256b0d1,
         type: 3}

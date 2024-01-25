@@ -41,12 +41,11 @@ namespace FirePatrol
             return -1;
         }
 
-        // Start is called before the first frame update
-        void Start()
+        public override void StartGame()
         {
             BurntEffect.dropSpeed = dropAnimationSpeed;
             SetupFireParticles();
-            AddFireToRandomPoint();
+            CalculateMaxBurnValue();
         }
 
         // Update is called once per frame
@@ -217,7 +216,7 @@ namespace FirePatrol
             {
                 if (point.Type == PointTypes.Water)
                     point.fireParticles = null;
-                else
+                else if (point.fireParticles = null)
                 {
                     point.fireParticles = Instantiate(fireParticlePrefab, point.Position + new Vector3(0, fireSpawnHeight, 0), Quaternion.identity, transform);
                     point.fireParticles.name = "FireParticles " + i;
