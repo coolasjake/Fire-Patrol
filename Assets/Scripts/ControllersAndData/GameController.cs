@@ -21,7 +21,7 @@ public class GameController : MonoBehaviour
     public float baseFireFrequency = 20f;
     public float seasonRealtimeDuration = 300f;
     public int seasonDaysDuration = 90;
-    public bool spawnNewFireDuringFire = false;
+    public bool spawnFiresDuringFire = false;
     public string menuSceneName = "Menu";
 
     private float _seasonStartTime = 0f;
@@ -54,7 +54,7 @@ public class GameController : MonoBehaviour
 
         if (FireController.singleton.NoFireInLevel())
         {
-            float spawnDelayStart = spawnNewFireDuringFire ? _lastIgniteTime : _lastFireTime;
+            float spawnDelayStart = spawnFiresDuringFire ? _lastIgniteTime : _lastFireTime;
             float currentFireRate = GetFireRate(normalisedTime);
             if (currentFireRate > 0 && Time.time > spawnDelayStart + (baseFireFrequency / currentFireRate))
             SpawnFire();
@@ -78,7 +78,7 @@ public class GameController : MonoBehaviour
 
     private float GetFireRate(float time01)
     {
-        float curveLength = fireRateOverSeason.keys[fireRateOverSeason.length].time;
+        float curveLength = fireRateOverSeason.keys[fireRateOverSeason.length - 1].time;
         return fireRateOverSeason.Evaluate(time01 * curveLength);
     }
 

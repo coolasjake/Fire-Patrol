@@ -149,7 +149,8 @@ namespace FirePatrol
                 return;
             point.wet = true;
             point.onFire = false;
-            point.fireParticles.ShowWet();
+            if (point.fireParticles != null)
+                point.fireParticles.ShowWet();
         }
 
         private void ProgressFireStage(PointData point)
@@ -216,7 +217,7 @@ namespace FirePatrol
             {
                 if (point.Type == PointTypes.Water)
                     point.fireParticles = null;
-                else if (point.fireParticles = null)
+                else
                 {
                     point.fireParticles = Instantiate(fireParticlePrefab, point.Position + new Vector3(0, fireSpawnHeight, 0), Quaternion.identity, transform);
                     point.fireParticles.name = "FireParticles " + i;
