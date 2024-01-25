@@ -10,6 +10,7 @@ namespace FirePatrol
         public FireParticlesManager fireParticlePrefab;
         public float fireSpawnHeight = 2f;
         public float dropAnimationSpeed = 30f;
+        public bool startWithoutGameController = false;
 
         [Tooltip("Duration of fire stages for 'Grass' type points. Set to 0 or less to skip the stage.")]
         [EnumNamedArray(typeof(FireStage))]
@@ -39,6 +40,15 @@ namespace FirePatrol
                     return rockyStageDurations[(int)point.fireStage];
             }
             return -1;
+        }
+
+        void Start()
+        {
+            if (startWithoutGameController)
+            {
+                StartGame();
+                StartRandomFire();
+            }
         }
 
         public override void StartGame()
