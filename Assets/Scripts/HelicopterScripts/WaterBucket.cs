@@ -4,8 +4,10 @@ using UnityEngine;
 
 namespace FirePatrol
 {
+    [RequireComponent(typeof(Animator))]
     public class WaterBucket : MonoBehaviour
     {
+        public Animator animator;
         public LayerMask waterLayer;
         public float raisedLength = 3.5f;
         public float loweredLength = 8f;
@@ -25,6 +27,8 @@ namespace FirePatrol
         // Start is called before the first frame update
         void Start()
         {
+            if (animator == null)
+                animator = GetComponent<Animator>();
             raisedLength = cord.cordLength;
             _hasWater = startWithWater;
         }
@@ -32,13 +36,13 @@ namespace FirePatrol
         // Update is called once per frame
         void Update()
         {
-            if (Input.GetButton("Fire"))
+            if (Input.GetButtonDown("Fire"))
             {
                 if (_hasWater)
                     LaunchWater();
-                else if (Time.time > _lastWaterLaunch + launchToLowerDelay)
-                    LowerBucket();
             }
+            else if (Input.GetButton("Fire") && Time.time > _lastWaterLaunch + launchToLowerDelay)
+                LowerBucket();
             else
                 RaiseBucket();
         }
@@ -50,6 +54,7 @@ namespace FirePatrol
             WaterSplash water = Instantiate(waterBlob, transform.position, Quaternion.identity);
             water.RB.velocity = RB.velocity;
             water.splashRadius = splashRadius;
+            animator.Play("EmptyBucket");
         }
 
         private void LowerBucket()
@@ -62,7 +67,6 @@ namespace FirePatrol
             cord.cordLength = Mathf.Clamp(cord.cordLength - winchSpeed * Time.deltaTime, raisedLength, loweredLength);
             if (_inWater)
             {
-                _hasWater = true;
                 _inWater = false;
             }
         }
@@ -72,6 +76,11 @@ namespace FirePatrol
             if (((1 << other.gameObject.layer) & waterLayer) != 0)
             {
                 _inWater = true;
+                if (_hasWater == false)
+                {
+                    _hasWater = true;
+                    animator.Play("FillBucket");
+                }
             }
         }
 

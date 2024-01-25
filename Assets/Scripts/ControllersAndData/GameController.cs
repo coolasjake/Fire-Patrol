@@ -67,7 +67,7 @@ public class GameController : MonoBehaviour
     {
         float burnPercent = FireController.singleton.LevelBurntPercentage();
         seasonCompletePanel.SetActive(true);
-        burnPercentText.text = (1f - burnPercent) * 100f + "%";
+        burnPercentText.text = ((1f - burnPercent) * 100f).DecimalPlaces(0) + "%";
     }
 
     private void SpawnFire()
