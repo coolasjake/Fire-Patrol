@@ -36,6 +36,7 @@ public class PauseMenu : MonoBehaviour
 
     public void CloseMenu()
     {
+        Debug.Log("Close Menu");
         gameObject.SetActive(false);
         settingsMenu.gameObject.SetActive(false);
         feedbackForm.gameObject.SetActive(false);
