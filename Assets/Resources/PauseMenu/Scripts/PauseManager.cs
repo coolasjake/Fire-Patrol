@@ -25,7 +25,6 @@ public static class PauseManager
 
     public static void TogglePause()
     {
-        Debug.Log("Toggle, pause = " + _isPaused);
         if (_isPaused)
             UnPause();
         else
@@ -38,9 +37,6 @@ public static class PauseManager
 
         if (pauseMenu != null)
             pauseMenu.gameObject.SetActive(true);
-
-
-        Debug.Log("Pause menu = " + pauseMenu);
 
         if (_systemPaused == false)
         {

@@ -79,7 +79,6 @@ public class SettingsManager : MonoBehaviour
 
     public void LoadSettings()
     {
-        print("loading settings");
         SettingsData data = Save.LoadFile();
         if (data == null)
         {
