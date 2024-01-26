@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
@@ -118,6 +119,13 @@ public class VoiceOverManager : MonoBehaviour
     public class VOLine
     {
         public AudioClip clip;
+        [Header("Mouse over for tooltip:")]
+        [Tooltip("The last voice line in the list that matches the condition will be used." +
+            "\nCondition Rules:" +
+            "\n-FirePercent/TimePercent => Checks every frame if the percent is greater or equal to this condition value (between 0 and 100)." +
+            "\n-LevelNumberStart => When the game starts, if the number in the FireController matches this condition the VO will play." +
+            "\n-FireInDirection => When a new fire is started, if the direction (N = 0, NE = 1, etc) matches the condition, the VO will play." +
+            "\n-Special/Hints => NOT IMPLEMENTED. Condition needs to match the arbitrary number set up in the code.")]
         public float condition = -1f;
         public bool priority = false;
     }
