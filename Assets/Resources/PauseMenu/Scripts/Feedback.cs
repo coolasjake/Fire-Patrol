@@ -20,7 +20,7 @@ public class Feedback : MonoBehaviour
 
     void Start()
     {
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
     }
 
     public void ShowFeedbackForm(GameObject contextObject)
