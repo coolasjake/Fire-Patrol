@@ -103,9 +103,9 @@ public class GameController : MonoBehaviour
 
     private void TriggerSounds(float time01)
     {
-        if (VoiceOverManager.TriggerVO(Category.TimePercent, time01))
+        if (VoiceOverManager.TriggerVO(Category.TimePercent, time01 * 100f))
             return;
-        if (VoiceOverManager.TriggerVO(Category.FirePercent, FireController.singleton.PercentOfLandOnFire))
+        if (VoiceOverManager.TriggerVO(Category.FirePercent, FireController.singleton.PercentOfLandOnFire * 100f))
             return;
     }
 
