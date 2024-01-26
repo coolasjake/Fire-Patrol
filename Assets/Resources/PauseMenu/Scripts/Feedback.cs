@@ -14,7 +14,9 @@ public class Feedback : MonoBehaviour
     [HideInInspector]
     public GameObject _contextObject;
 
-    public string URL = "https://docs.google.com/forms/u/5/d/e/1FAIpQLSd0TMU3NK3oPwJCHsXIzUKZ0lXo1Zd3Db-rs7UG_lVFig6HUg/formResponse";
+    public string URL = "https://docs.google.com/forms/u/5/d/e/1FAIpQLSd0TMU3NK3oPwJCHsXIzUKZ0lXo1Zd3Db-rs7UG_lVFig6HUg";
+    public string positivesEntry = "entry.1710500283";
+    public string negativesEntry = "entry.2054116615";
 
     public UnityEvent sendEvents;
 
@@ -47,12 +49,12 @@ public class Feedback : MonoBehaviour
     {
         WWWForm form = new WWWForm();
         //Good
-        form.AddField("entry.1710500283", goodThings);
+        form.AddField(positivesEntry, goodThings);
         //Bad
-        form.AddField("entry.2054116615", badThings);
+        form.AddField(negativesEntry, badThings);
 
 
-        UnityWebRequest www = UnityWebRequest.Post(URL, form);
+        UnityWebRequest www = UnityWebRequest.Post(URL + "/formResponse", form);
 
         yield return www.SendWebRequest();
     }
