@@ -43,13 +43,13 @@ namespace FirePatrol
 
         private float StageDurationForPoint(PointData point)
         {
-            switch (point.Type)
+            switch (point.TerrainType)
             {
-                case PointTypes.Grass:
+                case TerrainType.Grass:
                     return grassStageDurations[(int)point.fireStage];
-                case PointTypes.Forest:
+                case TerrainType.Forest:
                     return forestStageDurations[(int)point.fireStage];
-                case PointTypes.Rocky:
+                case TerrainType.Rocky:
                     return rockyStageDurations[(int)point.fireStage];
             }
             return -1;
@@ -314,7 +314,7 @@ namespace FirePatrol
             {
                 if (point.Type != PointTypes.Water)
                 {
-                    if (point.Type != PointTypes.Rocky)
+                    if (point.TerrainType != TerrainType.Rocky)
                     {
                         List<TileData> tiles = leveldata.GetNeighbourTiles(point);
                         foreach (TileData tile in tiles)
@@ -348,7 +348,7 @@ namespace FirePatrol
             {
                 if (point.Type != PointTypes.Water)
                 {
-                    if (point.Type != PointTypes.Rocky)
+                    if (point.TerrainType != TerrainType.Rocky)
                     {
                         List<TileData> tiles = leveldata.GetNeighbourTiles(point);
                         foreach (TileData tile in tiles)

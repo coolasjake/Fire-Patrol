@@ -325,11 +325,7 @@ namespace FirePatrol
                 case PointTypes.Water:
                     return Color.blue;
                 case PointTypes.Grass:
-                    return Color.yellow;
-                case PointTypes.Forest:
                     return Color.green;
-                case PointTypes.Rocky:
-                    return Color.grey;
             }
             return Color.red;
         }
@@ -340,15 +336,46 @@ namespace FirePatrol
             {
                 case BrushTypes.Grass:
                     return PointTypes.Grass;
+                case BrushTypes.Rocks:
+                    return PointTypes.Grass;
+                case BrushTypes.Forest:
+                    return PointTypes.Grass;
 
                 case BrushTypes.Water:
                     return PointTypes.Water;
 
-                case BrushTypes.Forest:
-                    return PointTypes.Forest;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(brush), brush, null);
+            }
+        }
 
-                case BrushTypes.Rocky:
-                    return PointTypes.Rocky;
+        Color GetColourForTerrainType(PointTypes pointType)
+        {
+            switch (pointType)
+            {
+                case PointTypes.Water:
+                    return Color.blue;
+                case PointTypes.Grass:
+                    return Color.green;
+            }
+            return Color.red;
+        }
+
+        TerrainType GetTerrainTypeForBrush(BrushTypes brush)
+        {
+            switch (brush)
+            {
+                case BrushTypes.Grass:
+                    return TerrainType.Grass;
+
+                case BrushTypes.Water:
+                    return TerrainType.Water;
+
+                case BrushTypes.Rocks:
+                    return TerrainType.Rocky;
+
+                case BrushTypes.Forest:
+                    return TerrainType.Forest;
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(brush), brush, null);

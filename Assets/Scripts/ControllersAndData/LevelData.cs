@@ -38,6 +38,12 @@ namespace FirePatrol
     {
         Water,
         Grass,
+    }
+
+    public enum TerrainType
+    {
+        Water,
+        Grass,
         Forest,
         Rocky,
     }
@@ -56,6 +62,7 @@ namespace FirePatrol
     public class PointData
     {
         public PointTypes Type;
+        public TerrainType TerrainType;
         public Vector3 Position;
         public FireParticlesManager fireParticles;
         //public BurntEffect burntEffect = new BurntEffect();
