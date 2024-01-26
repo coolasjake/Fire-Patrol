@@ -6,6 +6,7 @@ namespace FirePatrol
 {
     public class Helicopter : MonoBehaviour
     {
+        public LayerMask windBarrierLayer;
         #region Settings
         [Header("Movement Settings")]
         [Tooltip("Max speed of the helicopter based on drag forces.")]
@@ -14,15 +15,15 @@ namespace FirePatrol
 
         [Tooltip("How quickly the helicopter accelerates when it is fully tilted.")]
         [Min(0.001f)]
-        public float accelleration = 5f;
+        public float acceleration = 5f;
 
         [Tooltip("Amount of drag on the helicopter - controls max speed.")]
         [Min(0.001f)]
         public float dragReadonly = 10f;
 
-        [Tooltip("Bonus to accelleration when trying to slow down.")]
+        [Tooltip("Bonus to acceleration when trying to slow down.")]
         [Range(0f, 1f)]
-        public float deccellerationBonus = 0.5f;
+        public float decelerationBonus = 0.5f;
 
         [Tooltip("How steep the helicopter tilt it (doesn't effect movement).")]
         [Min(0.001f)]
@@ -119,14 +120,14 @@ namespace FirePatrol
 
         private void ApplyPropellorForce()
         {
-            float decellBonus = 1f + Mathf.Max(0, -Vector3.Dot(_tiltDir.normalized, RB.velocity.normalized)) * deccellerationBonus;
-            RB.velocity += _tiltDir * decellBonus * accelleration * Time.deltaTime;
+            float decellBonus = 1f + Mathf.Max(0, -Vector3.Dot(_tiltDir.normalized, RB.velocity.normalized)) * decelerationBonus;
+            RB.velocity += _tiltDir * decellBonus * acceleration * Time.deltaTime;
         }
 
 
-        private float MaxSpeedToDrag => (2f * RB.mass * accelleration) / Mathf.Pow(maxSpeed, 2);
+        private float MaxSpeedToDrag => (2f * RB.mass * acceleration) / Mathf.Pow(maxSpeed, 2);
 
-        private float DragToMaxSpeed => Mathf.Sqrt((2f * RB.mass * accelleration) / dragReadonly);
+        private float DragToMaxSpeed => Mathf.Sqrt((2f * RB.mass * acceleration) / dragReadonly);
 
         private const float airDensity = 0.01f;
         private void ApplyDragForces()
@@ -137,6 +138,14 @@ namespace FirePatrol
             dragValue = Mathf.Min(dragValue, currentVel);
             Vector3 dragForce = -RB.velocity.normalized * dragValue;
             RB.velocity += dragForce;
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            if (((1 << other.gameObject.layer) & windBarrierLayer) != 0)
+            {
+                RB.velocity -= transform.position.FixedY(0).normalized * acceleration * Time.deltaTime * 3f;
+            }
         }
         #endregion
 
