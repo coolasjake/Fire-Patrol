@@ -58,6 +58,8 @@ namespace FirePatrol
         public PointTypes Type;
         public Vector3 Position;
         public FireParticlesManager fireParticles;
+        //public BurntEffect burntEffect = new BurntEffect();
+        //public List<PropInstance> props = new List<PropInstance>();
         public bool onFire = false;
         public bool wet = false;
         public FireStage fireStage = FireStage.none;

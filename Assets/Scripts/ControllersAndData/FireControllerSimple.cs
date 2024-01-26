@@ -15,6 +15,8 @@ namespace FirePatrol
         private int _gridWidth = 0;
         private int _gridHeight = 0;
         public override float PercentOfLandOnFire => 0f;//_percentLandOnFire;
+        public override Vector3 LastFirePos => _lastFirePosition;
+        private Vector3 _lastFirePosition;
 
         public Direction windDirection = Direction.None;
 

@@ -29,11 +29,17 @@ namespace FirePatrol
         [Tooltip("Chance at the end of each fire stage to spread fire to neighboring points.")]
         [EnumNamedArray(typeof(FireStage))]
         public float[] stageStartSpreadChance = new float[System.Enum.GetValues(typeof(FireStage)).Length];
+        [Tooltip("The max burn value at the end of this stage. Fully burnt is 1. Make sure big numbers are after small numbers.")]
+        [EnumNamedArray(typeof(FireStage))]
+        public float[] burnValuePerStage = new float[System.Enum.GetValues(typeof(FireStage)).Length];
 
         private float _maxTotalBurnValue = 0;
         private int _numLandPoints = 0;
         public override float PercentOfLandOnFire => _percentLandOnFire;
         private float _percentLandOnFire = 0;
+
+        public override Vector3 LastFirePos => _lastFirePosition;
+        private Vector3 _lastFirePosition;
 
         private float StageDurationForPoint(PointData point)
         {
@@ -279,6 +285,7 @@ namespace FirePatrol
         private void SetPointOnFire(PointData point)
         {
             point.onFire = true;
+            _lastFirePosition = point.Position;
             //point.fireParticle.Play();
         }
 

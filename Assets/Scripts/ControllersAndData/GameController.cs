@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour
 {
     public FireController fireController;
+    public Helicopter helicopter;
 
     public Image seasonTimeBar;
     public TMP_Text seasonTimeText;
@@ -41,6 +42,7 @@ public class GameController : MonoBehaviour
     {
         FireController.singleton.StartGame();
         seasonCompletePanel.SetActive(false);
+        VoiceOverManager.TriggerVO(Category.LevelNumberStart, FireController.singleton.levelNumber);
     }
 
     // Update is called once per frame
@@ -75,6 +77,8 @@ public class GameController : MonoBehaviour
         else
             _lastFireTime = Time.time;
 
+
+
         UpdateFireChart();
     }
 
@@ -97,10 +101,61 @@ public class GameController : MonoBehaviour
         StartRain();
     }
 
+    private void TriggerSounds(float time01)
+    {
+        if (VoiceOverManager.TriggerVO(Category.TimePercent, time01))
+            return;
+        if (VoiceOverManager.TriggerVO(Category.FirePercent, FireController.singleton.PercentOfLandOnFire))
+            return;
+    }
+
     private void SpawnFire()
     {
         FireController.singleton.StartRandomFire();
+
+        int direction = CardinalDirection(helicopter.transform.position, FireController.singleton.LastFirePos);
+        VoiceOverManager.TriggerVO(Category.FireInDirection, direction);
+
         _lastIgniteTime = Time.time;
+    }
+
+    private int CardinalDirection(Vector3 origin, Vector3 dest)
+    {
+        Vector2 dir = dest.ToVector2() - origin.ToVector2();
+
+        float absY = Mathf.Abs(dir.y);
+        float absX = Mathf.Abs(dir.x);
+
+        if (absY > absX * 2f)
+        {
+            if (dir.y > 0)
+                return 0; //North
+            else
+                return 4; //South
+        }
+        
+        if (absX > absY *2f)
+        {
+            if (dir.x > 0)
+                return 2; //East
+            else
+                return 6; //West
+        }
+
+        if (dir.y > 0)
+        {
+            if (dir.x > 0)
+                return 1; //North East
+            else
+                return 7; //North West
+        }
+        else
+        {
+            if (dir.x > 0)
+                return 3; //South East
+            else
+                return 5; //South West
+        }
     }
 
     private float GetFireRate(float time01)
