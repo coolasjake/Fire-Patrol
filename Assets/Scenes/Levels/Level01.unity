@@ -67001,6 +67001,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fe9c88a3de419541ba363f35da25603, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  levelNumber: 0
   leveldata: {fileID: 1688175733}
   fireParticlePrefab: {fileID: 3402328387419877395, guid: a3848af628b020b48bd48abbb591951f,
     type: 3}
@@ -67036,6 +67037,13 @@ MonoBehaviour:
   - 0.4
   - 1
   - 0.8
+  - 0
+  burnValuePerStage:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
   - 0
 --- !u!1001 &1690185364
 PrefabInstance:
@@ -82593,6 +82601,66 @@ PrefabInstance:
       propertyPath: fireController
       value: 
       objectReference: {fileID: 1688175735}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[0].name
+      value: Level01
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[1].name
+      value: FirePercent
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[0].category
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[1].category
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[0].lines.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[1].lines.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[0].lines.Array.data[0].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 21224b8ffdbe96c42bb3bcee03958f9b, type: 3}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[0].lines.Array.data[1].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: a4ffe6636bd11c049a72db00d5a6898d, type: 3}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[0].lines.Array.data[2].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 06474ea3109295242a929a265f05e4d9, type: 3}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[0].lines.Array.data[3].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 647ec9403c37f6a4da0fff5347d7f29c, type: 3}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[0].lines.Array.data[4].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 8dc000e04464d8340bbea1d27402499a, type: 3}
     - target: {fileID: 8909069589945815669, guid: d63f03078d1940a448856611c0db089f,
         type: 3}
       propertyPath: m_LocalPosition.x
