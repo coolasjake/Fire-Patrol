@@ -14,6 +14,10 @@ public class VoiceOverManager : MonoBehaviour
 
     public List<string> hintShorthands = new List<string>();
 
+    public List<DirectionLine> fireWarningDirections = new List<DirectionLine>();
+    public List<SimpleLine> fireWarningStarts = new List<SimpleLine>();
+
+
     private bool _playingPriority = false;
 
     private void Reset()
@@ -135,7 +139,6 @@ public class VoiceOverManager : MonoBehaviour
         public string name = "";
         public Category category = Category.Special;
         public List<VOLine> lines = new List<VOLine>();
-
     }
 
     [System.Serializable]
@@ -165,6 +168,52 @@ public class VoiceOverManager : MonoBehaviour
             return variants[randomI];
         }
     }
+
+    [System.Serializable]
+    public class DirectionLine
+    {
+        public string name = "";
+        public CardinalDirection category = CardinalDirection.North;
+        [SerializeField]
+        private List<AudioClip> variants = new List<AudioClip>();
+
+        public AudioClip GetClip()
+        {
+            if (variants == null || variants.Count == 0)
+                return null;
+            int randomI = Random.Range(0, variants.Count);
+            return variants[randomI];
+        }
+    }
+
+    [System.Serializable]
+    public class SimpleLine
+    {
+        public string name = "";
+        [SerializeField]
+        private List<AudioClip> variants = new List<AudioClip>();
+        public bool priority = false;
+        public bool canRepeat = false;
+
+        public AudioClip GetClip()
+        {
+            if (variants == null || variants.Count == 0)
+                return null;
+            int randomI = Random.Range(0, variants.Count);
+            return variants[randomI];
+        }
+    }
+}
+public enum CardinalDirection
+{
+    North,
+    NorthEast,
+    East,
+    SouthEast,
+    South,
+    SouthWest,
+    West,
+    NorthWest,
 }
 public enum Category
 {
