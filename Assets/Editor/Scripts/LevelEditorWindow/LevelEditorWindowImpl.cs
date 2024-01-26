@@ -824,19 +824,28 @@ namespace FirePatrol
         {
             MarkSceneDirty();
             var levelData = GetLevelData();
+            string names = "";
             foreach (TileData tile in levelData.Tiles)
             {
                 if (tile.burntEffect == null)
                     tile.burntEffect = new BurntEffect();
 
                 List<MeshRenderer> meshes = new List<MeshRenderer>();
+                for (int i = 0; i < tile.Props.Count; ++i)
+                {
+                    if (tile.Props[i] == null || tile.Props[i].GameObject == null)
+                        tile.Props.RemoveAt(i--);
+                }
                 foreach (PropInstance prop in tile.Props)
                 {
                     MeshRenderer[] propMeshes = prop.GameObject.GetComponentsInChildren<MeshRenderer>();
                     meshes.AddRange(propMeshes);
+                    names += prop.GameObject.name + ", ";
                 }
                 tile.burntEffect.SetUpBurnables(meshes.ToArray());
+                names += "\n";
             }
+            Debug.Log("Prop Names" + names);
         }
 
         GUIStyle GetSelectedButtonStyle()

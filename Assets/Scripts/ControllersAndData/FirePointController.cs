@@ -96,23 +96,12 @@ namespace FirePatrol
 
         private void SetBurntLevel(PointData point)
         {
-            float burntLevel = 0;
-            switch (point.fireStage)
-            {
-                case FireStage.none:
-                    break;
-                case FireStage.sparks:
-                    break;
-                case FireStage.smallFlames:
-                    burntLevel = (point.fireprogress / StageDurationForPoint(point)) * 0.25f;
-                    break;
-                case FireStage.inferno:
-                    burntLevel = 0.25f + (point.fireprogress / StageDurationForPoint(point)) * 0.5f;
-                    break;
-                case FireStage.dying:
-                    burntLevel = 0.75f + (point.fireprogress / StageDurationForPoint(point)) * 0.25f;
-                    break;
-            }
+            int currentStage = Mathf.Clamp(((int)point.fireStage), 0, burnValuePerStage.Length - 1);
+            int prevStage = Mathf.Clamp(currentStage, 0, burnValuePerStage.Length - 1);
+            float prevMax = burnValuePerStage[prevStage];
+            float max = burnValuePerStage[currentStage];
+
+            float burntLevel = prevMax + (point.fireprogress / StageDurationForPoint(point)) * (max - prevMax);
 
             List<TileData> tiles = leveldata.GetNeighbourTiles(point);
             foreach (TileData tile in tiles)
