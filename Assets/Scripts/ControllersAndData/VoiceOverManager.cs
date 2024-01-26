@@ -12,6 +12,8 @@ public class VoiceOverManager : MonoBehaviour
 
     public List<VoiceOverCategory> voiceOverCategories = new List<VoiceOverCategory>();
 
+    public List<string> hintShorthands = new List<string>();
+
     private bool _playingPriority = false;
 
     private void Reset()
@@ -36,6 +38,17 @@ public class VoiceOverManager : MonoBehaviour
         }
     }
 
+    public static bool TriggerHintVO(Category category, string hintName)
+    {
+        Debug.Log("Trying to play " + category + ", " + hintName);
+        if (singleton != null)
+        {
+            float value = singleton.hintShorthands.IndexOf(hintName);
+            return singleton.TriggerLine(category, value);
+        }
+        return false;
+    }
+
     public static bool TriggerVO(Category category, float value)
     {
         Debug.Log("Trying to play " + category + ", " + value);
@@ -58,7 +71,7 @@ public class VoiceOverManager : MonoBehaviour
         {
             if (audioSource.isPlaying == false || (_playingPriority == false && line.priority == true))
             {
-                audioSource.clip = line.clip;
+                audioSource.clip = line.GetClip();
                 audioSource.Play();
                 audioSource.loop = false;
                 _playingPriority = line.priority;
@@ -70,6 +83,7 @@ public class VoiceOverManager : MonoBehaviour
 
     public VOLine FindMatchingLine(Category category, float value)
     {
+        List<VOLine> matchingLines = new List<VOLine>();
         VOLine bestLine = null;
         foreach (VoiceOverCategory VOC in voiceOverCategories)
         {
@@ -80,10 +94,16 @@ public class VoiceOverManager : MonoBehaviour
                     if (line.canRepeat == false && line.hasPlayed)
                         continue;
                     if (ConditionIsMet(category, line.condition, value))
-                        bestLine = line;
+                        matchingLines.Add(line);
                 }
                 break;
             }
+        }
+
+        if (matchingLines.Count > 0)
+        {
+            int randomI = Random.Range(0, matchingLines.Count);
+            bestLine = matchingLines[randomI];
         }
 
         return bestLine;
@@ -98,9 +118,9 @@ public class VoiceOverManager : MonoBehaviour
             case Category.Hints:
                 return value == condition;
             case Category.FirePercent:
-                return value >= condition;
+                return value == condition;
             case Category.TimePercent:
-                return value >= condition;
+                return value == condition;
             case Category.LevelNumberStart:
                 return value == condition;
             case Category.FireInDirection:
@@ -121,19 +141,29 @@ public class VoiceOverManager : MonoBehaviour
     [System.Serializable]
     public class VOLine
     {
-        public AudioClip clip;
+        public string name = "";
+        [SerializeField]
+        private List<AudioClip> variants = new List<AudioClip>();
         [Header("Mouse over for tooltip:")]
         [Tooltip("The last voice line in the list that matches the condition will be used." +
             "\nCondition Rules:" +
-            "\n-FirePercent/TimePercent => Checks every frame if the percent is greater or equal to this condition value (between 0 and 100)." +
+            "\n-FirePercent/TimePercent => Checks at regular intervals if the percent is equal to this condition value (between 0 and 100)." +
             "\n-LevelNumberStart => When the game starts, if the number in the FireController matches this condition the VO will play." +
             "\n-FireInDirection => When a new fire is started, if the direction (N = 0, NE = 1, etc) matches the condition, the VO will play." +
-            "\n-Special/Hints => NOT IMPLEMENTED. Condition needs to match the arbitrary number set up in the code.")]
+            "\n-Special/Hints => Condition needs to match the index of the hint in the hintShorthands list.")]
         public float condition = -1f;
         public bool priority = false;
         public bool canRepeat = false;
         [HideInInspector]
         public bool hasPlayed = false;
+
+        public AudioClip GetClip()
+        {
+            if (variants == null || variants.Count == 0)
+                return null;
+            int randomI = Random.Range(0, variants.Count);
+            return variants[randomI];
+        }
     }
 }
 public enum Category

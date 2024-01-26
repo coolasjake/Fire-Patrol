@@ -113,17 +113,25 @@ public class GameController : MonoBehaviour
     private void TriggerSounds(float time01)
     {
         float timeAsPercent = time01 * 100f;
-        if (timeAsPercent > _lastSeasonMessage + seasonLinesIncrement && VoiceOverManager.TriggerVO(Category.TimePercent, timeAsPercent))
+        if (timeAsPercent > _lastSeasonMessage + seasonLinesIncrement)
         {
-            _lastSeasonMessage = timeAsPercent;
-            return;
+            timeAsPercent = Mathf.Floor(timeAsPercent / seasonLinesIncrement) * seasonLinesIncrement;
+            if (VoiceOverManager.TriggerVO(Category.TimePercent, timeAsPercent))
+            {
+                _lastSeasonMessage = timeAsPercent;
+                return;
+            }
         }
 
         float fireAsPercent = FireController.singleton.PercentOfLandOnFire * 100f;
-        if (fireAsPercent > _lastFireMessage + fireLinesIncrement && VoiceOverManager.TriggerVO(Category.FirePercent, fireAsPercent))
+        if (fireAsPercent > _lastFireMessage + fireLinesIncrement)
         {
-            _lastFireMessage = fireAsPercent;
-            return;
+            fireAsPercent = Mathf.Floor(fireAsPercent / fireLinesIncrement) * fireLinesIncrement;
+            if (VoiceOverManager.TriggerVO(Category.FirePercent, fireAsPercent))
+            {
+                _lastFireMessage = fireAsPercent;
+                return;
+            }
         }
     }
 

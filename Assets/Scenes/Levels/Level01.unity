@@ -82604,17 +82604,37 @@ PrefabInstance:
     - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
         type: 3}
       propertyPath: voiceOverCategories.Array.size
-      value: 2
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
         type: 3}
       propertyPath: voiceOverCategories.Array.data[0].name
-      value: Level01
+      value: Level Starts
       objectReference: {fileID: 0}
     - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
         type: 3}
       propertyPath: voiceOverCategories.Array.data[1].name
-      value: FirePercent
+      value: Fire Percent
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[2].name
+      value: Time Percent
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[3].name
+      value: Fire Direction
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[4].name
+      value: Hints
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[5].name
+      value: Hints
       objectReference: {fileID: 0}
     - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
         type: 3}
@@ -82624,16 +82644,46 @@ PrefabInstance:
     - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
         type: 3}
       propertyPath: voiceOverCategories.Array.data[1].category
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
         type: 3}
-      propertyPath: voiceOverCategories.Array.data[0].lines.Array.size
+      propertyPath: voiceOverCategories.Array.data[2].category
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[3].category
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
         type: 3}
+      propertyPath: voiceOverCategories.Array.data[4].category
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[5].category
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[0].lines.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
       propertyPath: voiceOverCategories.Array.data[1].lines.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[2].lines.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[4].lines.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
@@ -82641,6 +82691,11 @@ PrefabInstance:
       propertyPath: voiceOverCategories.Array.data[0].lines.Array.data[0].clip
       value: 
       objectReference: {fileID: 8300000, guid: 21224b8ffdbe96c42bb3bcee03958f9b, type: 3}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[0].lines.Array.data[0].name
+      value: First Season
+      objectReference: {fileID: 0}
     - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
         type: 3}
       propertyPath: voiceOverCategories.Array.data[0].lines.Array.data[1].clip
@@ -82653,14 +82708,104 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: 06474ea3109295242a929a265f05e4d9, type: 3}
     - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
         type: 3}
+      propertyPath: voiceOverCategories.Array.data[0].lines.Array.data[2].name
+      value: Your first fire season
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
       propertyPath: voiceOverCategories.Array.data[0].lines.Array.data[3].clip
       value: 
       objectReference: {fileID: 8300000, guid: 647ec9403c37f6a4da0fff5347d7f29c, type: 3}
     - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
         type: 3}
+      propertyPath: voiceOverCategories.Array.data[0].lines.Array.data[3].name
+      value: Your first fire season (re-record)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
       propertyPath: voiceOverCategories.Array.data[0].lines.Array.data[4].clip
       value: 
       objectReference: {fileID: 8300000, guid: 8dc000e04464d8340bbea1d27402499a, type: 3}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[0].lines.Array.data[4].name
+      value: Your first fire season (re-record)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[4].lines.Array.data[0].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 21224b8ffdbe96c42bb3bcee03958f9b, type: 3}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[4].lines.Array.data[0].name
+      value: Bucket has 3 shots
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[4].lines.Array.data[1].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: a4ffe6636bd11c049a72db00d5a6898d, type: 3}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[4].lines.Array.data[2].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 06474ea3109295242a929a265f05e4d9, type: 3}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[0].lines.Array.data[0].condition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[0].lines.Array.data[2].condition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[0].lines.Array.data[3].condition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[0].lines.Array.data[4].condition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[0].lines.Array.data[0].variants.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[4].lines.Array.data[0].variants.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[0].lines.Array.data[0].variants.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 647ec9403c37f6a4da0fff5347d7f29c, type: 3}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[0].lines.Array.data[0].variants.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: 8dc000e04464d8340bbea1d27402499a, type: 3}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[4].lines.Array.data[0].variants.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 21224b8ffdbe96c42bb3bcee03958f9b, type: 3}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[4].lines.Array.data[0].variants.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: a4ffe6636bd11c049a72db00d5a6898d, type: 3}
+    - target: {fileID: 7790489009073707885, guid: d63f03078d1940a448856611c0db089f,
+        type: 3}
+      propertyPath: voiceOverCategories.Array.data[4].lines.Array.data[0].variants.Array.data[2]
+      value: 
+      objectReference: {fileID: 8300000, guid: 06474ea3109295242a929a265f05e4d9, type: 3}
     - target: {fileID: 8909069589945815669, guid: d63f03078d1940a448856611c0db089f,
         type: 3}
       propertyPath: m_LocalPosition.x
