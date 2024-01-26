@@ -27,7 +27,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.4919648, y: 1.4919648, z: 1.4919648}
+  m_LocalScale: {x: 1.5468535, y: 1.5468535, z: 1.5468535}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2868356653802176717}
@@ -85,7 +85,6 @@ GameObject:
   - component: {fileID: 9067557498764675606}
   - component: {fileID: 2348140181886380059}
   - component: {fileID: 4489090409971880660}
-  - component: {fileID: 22539624195627978}
   m_Layer: 0
   m_Name: Icosphere.085
   m_TagString: Burnable
@@ -158,28 +157,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &22539624195627978
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6316054870677163795}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 1748589092407351728}
 --- !u!1 &6330596201961877739
 GameObject:
   m_ObjectHideFlags: 0
@@ -191,7 +168,6 @@ GameObject:
   - component: {fileID: 2868356653802176717}
   - component: {fileID: 7964389383556717665}
   - component: {fileID: 3443317675989644722}
-  - component: {fileID: 1868999498356783919}
   m_Layer: 0
   m_Name: Icosphere.086
   m_TagString: Burnable
@@ -264,28 +240,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &1868999498356783919
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6330596201961877739}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 6955240894158257777}
 --- !u!1 &6578251471343882876
 GameObject:
   m_ObjectHideFlags: 0
@@ -297,7 +251,6 @@ GameObject:
   - component: {fileID: 6295286127348552617}
   - component: {fileID: 787069664647671779}
   - component: {fileID: 2550368944238323604}
-  - component: {fileID: 4348778974957811568}
   m_Layer: 0
   m_Name: Cube.082
   m_TagString: Charable
@@ -370,28 +323,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4348778974957811568
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6578251471343882876}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -8654455736443396426}
 --- !u!1 &7494892964827586711
 GameObject:
   m_ObjectHideFlags: 0
@@ -403,7 +334,6 @@ GameObject:
   - component: {fileID: 2221090128642506479}
   - component: {fileID: 3604537047500138071}
   - component: {fileID: 6813249532286083297}
-  - component: {fileID: 7421936424666482931}
   m_Layer: 0
   m_Name: Icosphere.084
   m_TagString: Burnable
@@ -476,28 +406,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &7421936424666482931
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7494892964827586711}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 9223353842365595972}
 --- !u!43 &-8654455736443396426
 Mesh:
   m_ObjectHideFlags: 0

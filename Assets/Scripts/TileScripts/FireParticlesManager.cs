@@ -8,11 +8,13 @@ namespace FirePatrol
     public class FireParticlesManager : MonoBehaviour
     {
         public static int[] numSoundsPlaying = new int[System.Enum.GetValues(typeof(FireStage)).Length];
+        public static int fireExtinguishedsPlaying = 0;
         public static int maxSimultaneousSounds = 3;
 
         public AudioSource audioSource;
         [EnumNamedArray(typeof(FireStage))]
         public AudioClip[] fireStageSounds = new AudioClip[System.Enum.GetValues(typeof(FireStage)).Length];
+        public AudioClip fireExtinguishedSound;
         [EnumNamedArray(typeof(FireStage))]
         public ParticleSystem[] fireStageParticles = new ParticleSystem[System.Enum.GetValues(typeof(FireStage)).Length];
         [Min(0.1f)]

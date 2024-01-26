@@ -14,7 +14,9 @@ public class GameController : MonoBehaviour
     public TMP_Text seasonTimeText;
 
     public GameObject seasonCompletePanel;
+    public GameObject seasonFailPanel;
     public TMP_Text burnPercentText;
+    public TMP_Text failBurnPercentText;
 
     public Image firePercentChart;
     public ParticleSystem rainstorm;
@@ -32,6 +34,10 @@ public class GameController : MonoBehaviour
 
     public float fireLinesIncrement = 25f;
     public float seasonLinesIncrement = 15f;
+    [Range(0f, 1f)]
+    public float gameoverCheckIncrement = 0.1f;
+    [Range(0f, 100f)]
+    public float gameoverPercentage = 70f;
 
     private float _seasonStartTime = 0f;
     private float _lastIgniteTime = 0f;
@@ -39,8 +45,10 @@ public class GameController : MonoBehaviour
 
     private float _lastFireMessage = 0f;
     private float _lastSeasonMessage = 0f;
+    private float _lastGameoverCheck = 0f;
 
     private bool _seasonEnded = false;
+    private bool _seasonFailed = false;
     private bool _rainStarted = false;
 
     // Start is called before the first frame update
@@ -50,7 +58,18 @@ public class GameController : MonoBehaviour
             helicopter = FindObjectOfType<Helicopter>();
         FireController.singleton.StartGame();
         seasonCompletePanel.SetActive(false);
+        seasonFailPanel.SetActive(false);
         VoiceOverManager.TriggerVO(Category.LevelNumberStart, FireController.singleton.levelNumber);
+    }
+
+    private void ResetTimers()
+    {
+        _seasonStartTime = Time.time;
+        _lastIgniteTime = Time.time;
+        _lastFireTime = Time.time;
+        _lastFireMessage = Time.time;
+        _lastSeasonMessage = Time.time;
+        _lastGameoverCheck = 0f;
     }
 
     // Update is called once per frame
@@ -61,22 +80,40 @@ public class GameController : MonoBehaviour
 
     private void GameTick()
     {
+        //Update the burnt percent after the game is failed
+        if (_seasonFailed)
+            EndSeasonFail();
+
         if (_seasonEnded)
             return;
 
         float normalisedTime = (Time.time - _seasonStartTime) / seasonRealtimeDuration;
         normalisedTime = Mathf.Clamp01(normalisedTime);
         UpdateSeasonTimer(normalisedTime);
+
+        //Check Gameover
+        if (normalisedTime >= _lastGameoverCheck + gameoverCheckIncrement)
+        {
+            _lastGameoverCheck = _lastGameoverCheck + gameoverCheckIncrement;
+            if (FireController.singleton.LevelBurntPercentage() * 100f > gameoverPercentage)
+            {
+
+            }
+        }
+
         if (normalisedTime >= 1)
         {
-            EndSeason();
+            //End season if time > season duration
+            EndSeasonPass();
         }
         else if (Time.time >= _seasonStartTime + seasonRealtimeDuration - rainDuration)
         {
+            //Start rain if time till season over is less than rain duration
             StartRain();
         }
         else if (FireController.singleton.NoFireInLevel() || spawnFiresDuringFire)
         {
+            //Spawn a fire if spawn rate is greater that time since last fire
             float spawnDelayStart = spawnFiresDuringFire ? _lastIgniteTime : _lastFireTime;
             float currentFireRate = GetFireRate(normalisedTime);
             if (currentFireRate > 0 && Time.time > spawnDelayStart + (baseFireFrequency / currentFireRate))
@@ -85,8 +122,7 @@ public class GameController : MonoBehaviour
         else
             _lastFireTime = Time.time;
 
-
-
+        //Update the fire chart
         UpdateFireChart();
     }
 
@@ -100,13 +136,24 @@ public class GameController : MonoBehaviour
         rainSound.Play();
     }
 
-    private void EndSeason()
+    private void EndSeasonPass()
     {
+        if (_seasonEnded)
+            return;
         _seasonEnded = true;
         float burnPercent = FireController.singleton.LevelBurntPercentage();
         seasonCompletePanel.SetActive(true);
         burnPercentText.text = ((1f - burnPercent) * 100f).DecimalPlaces(0) + "%";
         StartRain();
+    }
+
+    private void EndSeasonFail()
+    {
+        _seasonEnded = true;
+        _seasonFailed = true;
+        float burnPercent = FireController.singleton.LevelBurntPercentage();
+        seasonFailPanel.SetActive(true);
+        failBurnPercentText.text = ((1f - burnPercent) * 100f).DecimalPlaces(0) + "%";
     }
 
     private void TriggerSounds(float time01)

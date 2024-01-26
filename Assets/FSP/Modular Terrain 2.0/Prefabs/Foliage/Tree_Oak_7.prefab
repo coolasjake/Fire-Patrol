@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 5354069140847373064}
   - component: {fileID: 3180921226156267113}
   - component: {fileID: 6821688195284680563}
-  - component: {fileID: 6628399912384066449}
   m_Layer: 0
   m_Name: Cube.085
   m_TagString: Charable
@@ -84,28 +83,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &6628399912384066449
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1860495188367863861}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4764856925181036047}
 --- !u!1 &3328029909535824189
 GameObject:
   m_ObjectHideFlags: 0
@@ -117,7 +94,6 @@ GameObject:
   - component: {fileID: 2997788163765064173}
   - component: {fileID: 7432951350122759159}
   - component: {fileID: 7201758619819275748}
-  - component: {fileID: 4231340120343711152}
   m_Layer: 0
   m_Name: Icosphere.056
   m_TagString: Burnable
@@ -190,28 +166,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4231340120343711152
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3328029909535824189}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -1088708145883423242}
 --- !u!1 &3444430984039205872
 GameObject:
   m_ObjectHideFlags: 0
@@ -223,7 +177,6 @@ GameObject:
   - component: {fileID: 69445448342165576}
   - component: {fileID: 2892523510259715633}
   - component: {fileID: 1801078399007874445}
-  - component: {fileID: 7180475387510368401}
   m_Layer: 0
   m_Name: Icosphere.058
   m_TagString: Burnable
@@ -296,28 +249,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &7180475387510368401
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3444430984039205872}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -137665174772239458}
 --- !u!1 &5846825537837438796
 GameObject:
   m_ObjectHideFlags: 0
@@ -329,7 +260,6 @@ GameObject:
   - component: {fileID: 3591383266791533578}
   - component: {fileID: 7815730727859009178}
   - component: {fileID: 8555711275919972530}
-  - component: {fileID: 2219709640214748045}
   m_Layer: 0
   m_Name: Icosphere.055
   m_TagString: Burnable
@@ -402,28 +332,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &2219709640214748045
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5846825537837438796}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -7147199236002295327}
 --- !u!1 &6580970355565654393
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,7 +343,6 @@ GameObject:
   - component: {fileID: 1318307347644881524}
   - component: {fileID: 3488389682626057890}
   - component: {fileID: 5843811108638570960}
-  - component: {fileID: 2958287042438825121}
   m_Layer: 0
   m_Name: Icosphere.057
   m_TagString: Burnable
@@ -508,28 +415,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &2958287042438825121
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6580970355565654393}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -7766964554507252383}
 --- !u!1 &6997667693445795669
 GameObject:
   m_ObjectHideFlags: 0
@@ -557,7 +442,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2936921, y: 1.2936921, z: 1.2936921}
+  m_LocalScale: {x: 1.8093737, y: 1.8093737, z: 1.8093737}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 69445448342165576}
@@ -617,7 +502,6 @@ GameObject:
   - component: {fileID: 5746021613002181823}
   - component: {fileID: 8632758230401630021}
   - component: {fileID: 7689617526980634683}
-  - component: {fileID: 6387613775644017060}
   m_Layer: 0
   m_Name: Icosphere.050
   m_TagString: Burnable
@@ -690,28 +574,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &6387613775644017060
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7557249941977988462}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -6769373414397413058}
 --- !u!43 &-7766964554507252383
 Mesh:
   m_ObjectHideFlags: 0
