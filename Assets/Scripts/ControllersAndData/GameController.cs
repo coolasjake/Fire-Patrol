@@ -8,8 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    public FireController fireController;
-    public Helicopter helicopter;
+    private Helicopter helicopter;
 
     public Image seasonTimeBar;
     public TMP_Text seasonTimeText;
@@ -193,6 +192,8 @@ public class GameController : MonoBehaviour
     private void UpdateFireChart()
     {
         float s = FireController.singleton.PercentOfLandOnFire;
+        if (s == float.NaN)
+            s = 0;
         if (s > 0)
             s = Mathf.Max(0.1f, s);
         Vector3 target = new Vector3(s, s, s);
@@ -214,6 +215,11 @@ public class GameController : MonoBehaviour
     public void ReturnToMenu()
     {
         SceneManager.LoadScene(menuSceneName);
+    }
+
+    public void GoToNextScene()
+    {
+        SceneManager.LoadScene(FireController.singleton.levelNumber + 1);
     }
 
     private static string DayToDate(int day)

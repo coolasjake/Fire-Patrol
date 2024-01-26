@@ -848,6 +848,38 @@ namespace FirePatrol
             Debug.Log("Prop Names" + names);
         }
 
+        void ShrinkProp()
+        {
+            if (_currentBrush.HasValue == false)
+                return;
+            MarkSceneDirty();
+            var levelData = GetLevelData();
+            foreach (TileData tile in levelData.Tiles)
+            {
+                foreach (PropInstance prop in tile.Props)
+                {
+                    if (prop.PropType == BrushTypeToPropType(_currentBrush.Value))
+                        prop.GameObject.transform.localScale *= 0.9f;
+                }
+            }
+        }
+
+        void GrowProp()
+        {
+            if (_currentBrush.HasValue == false)
+                return;
+            MarkSceneDirty();
+            var levelData = GetLevelData();
+            foreach (TileData tile in levelData.Tiles)
+            {
+                foreach (PropInstance prop in tile.Props)
+                {
+                    if (prop.PropType == BrushTypeToPropType(_currentBrush.Value))
+                        prop.GameObject.transform.localScale *= 1.1f;
+                }
+            }
+        }
+
         GUIStyle GetSelectedButtonStyle()
         {
             if (_selectedButtonStyle == null)
@@ -956,6 +988,19 @@ namespace FirePatrol
                         _highlightedPoint = null;
                         _highlightedPropPosition = null;
                         SceneView.RepaintAll();
+                    }
+                }
+
+                using (GuiHelper.HorizontalBlock())
+                {
+                    if (GUILayout.Button("Grow Props"))
+                    {
+                        GrowProp();
+                    }
+
+                    if (GUILayout.Button("Shrink Props"))
+                    {
+                        ShrinkProp();
                     }
                 }
 

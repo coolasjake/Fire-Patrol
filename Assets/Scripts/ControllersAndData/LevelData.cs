@@ -61,7 +61,7 @@ namespace FirePatrol
         //public BurntEffect burntEffect = new BurntEffect();
         //public List<PropInstance> props = new List<PropInstance>();
         public bool onFire = false;
-        public bool wet = false;
+        public int wet = 0;
         public FireStage fireStage = FireStage.none;
         public float fireprogress = 0;
         public float heat = 0;

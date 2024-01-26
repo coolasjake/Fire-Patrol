@@ -106,7 +106,7 @@ namespace FirePatrol
             List<TileData> tiles = leveldata.GetNeighbourTiles(point);
             foreach (TileData tile in tiles)
             {
-                tile.burntEffect.SetBurntness(burntLevel);
+                tile.burntEffect.SetBurntness(Mathf.Min(tile.burntEffect.burntLevel + Time.deltaTime, burntLevel));
                 if (tile.burntEffect.CanStartDropAnimation())
                 {
                     tile.burntEffect.DropCoroutine = StartCoroutine(BurntEffect.BurnablesDropAnimation(tile.burntEffect));
@@ -159,7 +159,7 @@ namespace FirePatrol
             //Debug.Log("Wetting point: " + point.Row + ", " + point.Col + " (type = " + point.Type + ")", point.fireParticle);
             if (point == null)
                 return;
-            point.wet = true;
+            point.wet = 5;
             point.onFire = false;
             if (point.fireParticles != null)
                 point.fireParticles.ShowWet();
@@ -223,9 +223,12 @@ namespace FirePatrol
             List<PointData> neighbors = leveldata.GetDirectNeighbourPoints(point);
             foreach (PointData neighbor in neighbors)
             {
-                if (neighbor.Type == PointTypes.Water || neighbor.onFire || neighbor.wet || neighbor.fireStage == FireStage.ashes)
+                if (neighbor.Type == PointTypes.Water || neighbor.onFire || neighbor.fireStage == FireStage.ashes)
                     continue;
-                if (Random.value <= chance)
+
+                if (neighbor.wet > 0)
+                    neighbor.wet -= 1;
+                else if (Random.value <= chance)
                     SetPointOnFire(neighbor);
             }
         }    
