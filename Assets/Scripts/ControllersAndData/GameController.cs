@@ -31,15 +31,24 @@ public class GameController : MonoBehaviour
     public bool spawnFiresDuringFire = false;
     public string menuSceneName = "Menu";
 
+    public float fireLinesIncrement = 25f;
+    public float seasonLinesIncrement = 15f;
+
     private float _seasonStartTime = 0f;
     private float _lastIgniteTime = 0f;
     private float _lastFireTime = 0f;
+
+    private float _lastFireMessage = 0f;
+    private float _lastSeasonMessage = 0f;
+
     private bool _seasonEnded = false;
     private bool _rainStarted = false;
 
     // Start is called before the first frame update
     void Start()
     {
+        if (helicopter == null)
+            helicopter = FindObjectOfType<Helicopter>();
         FireController.singleton.StartGame();
         seasonCompletePanel.SetActive(false);
         VoiceOverManager.TriggerVO(Category.LevelNumberStart, FireController.singleton.levelNumber);
@@ -103,10 +112,19 @@ public class GameController : MonoBehaviour
 
     private void TriggerSounds(float time01)
     {
-        if (VoiceOverManager.TriggerVO(Category.TimePercent, time01 * 100f))
+        float timeAsPercent = time01 * 100f;
+        if (timeAsPercent > _lastSeasonMessage + seasonLinesIncrement && VoiceOverManager.TriggerVO(Category.TimePercent, timeAsPercent))
+        {
+            _lastSeasonMessage = timeAsPercent;
             return;
-        if (VoiceOverManager.TriggerVO(Category.FirePercent, FireController.singleton.PercentOfLandOnFire * 100f))
+        }
+
+        float fireAsPercent = FireController.singleton.PercentOfLandOnFire * 100f;
+        if (fireAsPercent > _lastFireMessage + fireLinesIncrement && VoiceOverManager.TriggerVO(Category.FirePercent, fireAsPercent))
+        {
+            _lastFireMessage = fireAsPercent;
             return;
+        }
     }
 
     private void SpawnFire()

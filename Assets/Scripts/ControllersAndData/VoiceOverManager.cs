@@ -38,6 +38,7 @@ public class VoiceOverManager : MonoBehaviour
 
     public static bool TriggerVO(Category category, float value)
     {
+        Debug.Log("Trying to play " + category + ", " + value);
         if (singleton != null)
             return singleton.TriggerLine(category, value);
         return false;
@@ -76,6 +77,8 @@ public class VoiceOverManager : MonoBehaviour
             {
                 foreach (VOLine line in VOC.lines)
                 {
+                    if (line.canRepeat == false && line.hasPlayed)
+                        continue;
                     if (ConditionIsMet(category, line.condition, value))
                         bestLine = line;
                 }
@@ -128,6 +131,9 @@ public class VoiceOverManager : MonoBehaviour
             "\n-Special/Hints => NOT IMPLEMENTED. Condition needs to match the arbitrary number set up in the code.")]
         public float condition = -1f;
         public bool priority = false;
+        public bool canRepeat = false;
+        [HideInInspector]
+        public bool hasPlayed = false;
     }
 }
 public enum Category
