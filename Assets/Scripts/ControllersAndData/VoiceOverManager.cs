@@ -44,7 +44,6 @@ public class VoiceOverManager : MonoBehaviour
 
     public static bool TriggerHintVO(Category category, string hintName)
     {
-        Debug.Log("Trying to play " + category + ", " + hintName);
         if (singleton != null)
         {
             float value = singleton.hintShorthands.IndexOf(hintName);
@@ -55,7 +54,6 @@ public class VoiceOverManager : MonoBehaviour
 
     public static bool TriggerVO(Category category, float value)
     {
-        Debug.Log("Trying to play " + category + ", " + value);
         if (singleton != null)
             return singleton.TriggerLine(category, value);
         return false;
@@ -73,6 +71,7 @@ public class VoiceOverManager : MonoBehaviour
         VOLine line = FindMatchingLine(category, value);
         if (line != null)
         {
+            Debug.Log("Found line for " + category + ", " + value);
             if (audioSource.isPlaying == false || (_playingPriority == false && line.priority == true))
             {
                 audioSource.clip = line.GetClip();

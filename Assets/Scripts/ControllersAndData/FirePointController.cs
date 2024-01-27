@@ -171,6 +171,10 @@ namespace FirePatrol
             {
                 WetPoint(point);
             }
+
+            FireParticlesManager[] particles = FindObjectsOfType<FireParticlesManager>();
+            foreach (FireParticlesManager pm in particles)
+                pm.audioSource.Stop();
         }
 
         private void ProgressFireStage(PointData point)

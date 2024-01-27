@@ -56,6 +56,7 @@ public class GameController : MonoBehaviour
     {
         if (helicopter == null)
             helicopter = FindObjectOfType<Helicopter>();
+        ResetTimers();
         FireController.singleton.StartGame();
         seasonCompletePanel.SetActive(false);
         seasonFailPanel.SetActive(false);
@@ -97,7 +98,7 @@ public class GameController : MonoBehaviour
             _lastGameoverCheck = _lastGameoverCheck + gameoverCheckIncrement;
             if (FireController.singleton.LevelBurntPercentage() * 100f > gameoverPercentage)
             {
-
+                EndSeasonFail();
             }
         }
 
@@ -124,6 +125,11 @@ public class GameController : MonoBehaviour
 
         //Update the fire chart
         UpdateFireChart();
+
+        //Update sounds
+        TriggerSounds(normalisedTime);
+
+        print("Heli Dir = " + CardinalDirection(Vector3.zero, helicopter.transform.position));
     }
 
     private void StartRain()
@@ -267,6 +273,11 @@ public class GameController : MonoBehaviour
     public void GoToNextScene()
     {
         SceneManager.LoadScene(FireController.singleton.levelNumber + 1);
+    }
+
+    public void RestartLevel()
+    {
+        SceneManager.LoadScene(FireController.singleton.levelNumber);
     }
 
     private static string DayToDate(int day)

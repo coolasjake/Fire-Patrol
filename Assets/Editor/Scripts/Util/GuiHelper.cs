@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Collections.Generic;
 using System;
 using System.IO;
@@ -106,3 +107,4 @@ namespace FirePatrol
         }
     }
 }
+#endif

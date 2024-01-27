@@ -78,6 +78,9 @@ namespace FirePatrol
             //Animations:
             SpinPropellor();
 
+            if (PauseManager.Paused)
+                return;
+
             //Input:
             dragReadonly = MaxSpeedToDrag; //Only in update so that max speed can be changed during runtime in inspector
             //maxSpeedReadonly = DragToMaxSpeed;

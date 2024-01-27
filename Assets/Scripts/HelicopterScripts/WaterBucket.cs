@@ -38,6 +38,9 @@ namespace FirePatrol
         // Update is called once per frame
         void Update()
         {
+            if (PauseManager.Paused)
+                return;
+
             if (Input.GetButtonDown("Fire"))
             {
                 if (_numSplashes > 0 && _inWater == false)

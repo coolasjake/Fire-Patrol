@@ -9,7 +9,8 @@ namespace FirePatrol
     {
         public static int[] numSoundsPlaying = new int[System.Enum.GetValues(typeof(FireStage)).Length];
         public static int fireExtinguishedsPlaying = 0;
-        public static int maxSimultaneousSounds = 3;
+        public bool extinguishPlaying = false;
+        public static int maxSimultaneousSounds = 2;
 
         public AudioSource audioSource;
         [EnumNamedArray(typeof(FireStage))]
@@ -62,7 +63,7 @@ namespace FirePatrol
             {
                 if (fireStageParticles[i] == null)
                     continue;
-                if (i != index)
+                if (i != index && i != (int)FireStage.ashes)
                     fireStageParticles[i].Stop(false, ParticleSystemStopBehavior.StopEmitting);
             }
             if (fireStageParticles[index] != null)
@@ -95,8 +96,16 @@ namespace FirePatrol
             float t = 0;
 
             //Stop and fade out old sound
-            if (audioSource.clip != null)
+            if (extinguishPlaying)
             {
+                fireExtinguishedsPlaying -= 1;
+                extinguishPlaying = false;
+                audioSource.loop = true;
+                audioSource.Stop();
+            }
+            else if (audioSource.clip != null)
+            {
+
                 while (Time.time < startTime + (audioFadeTime / 2f))
                 {
                     t = (Time.time - startTime) / (audioFadeTime / 2f);
@@ -104,6 +113,8 @@ namespace FirePatrol
                     yield return wait;
                 }
                 numSoundsPlaying[_currentlyPlayingParticle] -= 1;
+                if (numSoundsPlaying[_currentlyPlayingParticle] < 0)
+                    numSoundsPlaying[_currentlyPlayingParticle] = 0;
             }
 
             //Start and fade in new sound
@@ -130,8 +141,47 @@ namespace FirePatrol
 
         public void ShowWet()
         {
-            ShowStageSimple(FireStage.none);
+            audioSource.Stop();
+            if (extinguishPlaying)
+            {
+                fireExtinguishedsPlaying -= 1;
+                extinguishPlaying = false;
+                audioSource.loop = true;
+                audioSource.Stop();
+            }
+
             //Show wet effect.
+            if (_transitionCoroutine != null)
+                EndTransition();
+
+            for (int i = 0; i < fireStageParticles.Length; ++i)
+            {
+                if (fireStageParticles[i] == null)
+                    continue;
+                if (i != 0 && i != (int)FireStage.ashes)
+                    fireStageParticles[i].Stop(false, ParticleSystemStopBehavior.StopEmitting);
+            }
+
+
+            if (audioSource.isPlaying && extinguishPlaying == false && fireExtinguishedsPlaying < maxSimultaneousSounds)
+            {
+                if (_audioFadeCoroutine == null)
+                {
+                    startVolume = audioSource.volume;
+                    if (audioSource.clip != null)
+                        numSoundsPlaying[_currentlyPlayingParticle] -= 1;
+                }
+                else
+                    StopCoroutine(_audioFadeCoroutine);
+
+                audioSource.clip = fireExtinguishedSound;
+                audioSource.loop = false;
+                audioSource.Play();
+                fireExtinguishedsPlaying += 1;
+                extinguishPlaying = true;
+            }
+
+            _currentlyPlayingParticle = 0;
         }
 
         private Coroutine _transitionCoroutine = null;
